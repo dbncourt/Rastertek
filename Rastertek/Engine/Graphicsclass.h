@@ -4,10 +4,10 @@
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
 
-//////////////
-// INCLUDES //
-//////////////
-#include <windows.h>
+///////////////////////
+// MY CLASS INCLUDES //
+///////////////////////
+#include "D3DClass.h"
 
 /////////////
 // GLOBALS //
@@ -23,6 +23,10 @@ const float SCREEN_NEAR = 0.1f;
 ////////////////////////////////////////////////////////////////////////////////
 class GraphicsClass
 {
+
+private:
+	D3DClass* m_D3D;
+
 public:
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);

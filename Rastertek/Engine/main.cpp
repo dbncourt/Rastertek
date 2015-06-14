@@ -9,7 +9,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SystemClass* System;
 
 	//Create the system object
-	System = new SystemClass;
+	System = new SystemClass();
 	if (!System)
 	{
 		return 0;

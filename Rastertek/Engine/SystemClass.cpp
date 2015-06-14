@@ -3,8 +3,8 @@
 
 SystemClass::SystemClass()
 {
-	m_Input = NULL;
-	m_Graphics = NULL;
+	this->m_Input = NULL;
+	this->m_Graphics = NULL;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -28,41 +28,40 @@ bool SystemClass::Initialize()
 	InitializeWindows(screenWidth, screenHeight);
 
 	//Create the input object. This object will be used to handle reading the keyboard input from the user
-	m_Input = new InputClass;
-	if (!m_Input)
+	this->m_Input = new InputClass;
+	if (!this->m_Input)
 	{
 		return false;
 	}
 
 	//Initialize the input object
-	m_Input->Initialize();
+	this->m_Input->Initialize();
 
 	//Create the graphics object. This object will handle rendering all the graphics for this application
-	m_Graphics = new GraphicsClass;
-	if (!m_Graphics)
+	this->m_Graphics = new GraphicsClass;
+	if (!this->m_Graphics)
 	{
 		return false;
 	}
-
 	//Initialize the graphics object
-	return m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
+	return this->m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
 }
 
 void SystemClass::Shutdown()
 {
 	//Release the graphics object
-	if (m_Graphics)
+	if (this->m_Graphics)
 	{
-		m_Graphics->Shutdown();
-		delete m_Graphics;
-		m_Graphics = NULL;
+		this->m_Graphics->Shutdown();
+		delete this->m_Graphics;
+		this->m_Graphics = NULL;
 	}
 
 	//Release the input object
-	if (m_Input)
+	if (this->m_Input)
 	{
-		delete m_Input;
-		m_Input = NULL;
+		delete this->m_Input;
+		this->m_Input = NULL;
 	}
 
 	// Shutdown the window.
@@ -112,13 +111,13 @@ bool SystemClass::Frame()
 	bool result;
 	
 	//Check if the user pressed escape and wants to exit the application
-	if (m_Input->IsKeyDown(VK_ESCAPE))
+	if (this->m_Input->IsKeyDown(VK_ESCAPE))
 	{
 		return false;
 	}
 
 	//Do the frame processing for the graphics object
-	result = m_Graphics->Frame();
+	result = this->m_Graphics->Frame();
 	if (!result)
 	{
 		return false;
@@ -135,13 +134,13 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam
 		case WM_KEYDOWN:
 		{
 			//If a key is pressed, send it to the input object so it can record that state.
-			m_Input->KeyDown((unsigned int)wParam);
+			this->m_Input->KeyDown((unsigned int)wParam);
 			return 0;
 		}
 		case WM_KEYUP:
 		{
 			//If a key is released, send it to the input object so it can record that state.
-			m_Input->KeyUp((unsigned int)wParam);
+			this->m_Input->KeyUp((unsigned int)wParam);
 			return 0;
 		}
 		default:
@@ -161,10 +160,10 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	ApplicationHandle = this;
 
 	//Get the instance of this application
-	m_hinstance = GetModuleHandle(NULL);
+	this->m_hinstance = GetModuleHandle(NULL);
 
 	//Give the application a name
-	m_applicationName = L"Engine";
+	this->m_applicationName = L"Engine";
 
 	//Setup the windows class with default settings
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -177,7 +176,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = m_applicationName;
+	wc.lpszClassName = this->m_applicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	//Register the window class
@@ -216,12 +215,12 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 	
 	//Create the window with the screen settings and get the handle of it
-	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
+	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, this->m_hinstance, NULL);
 
 	//Bring the window up on the screen and set it as main focus
-	ShowWindow(m_hwnd, SW_SHOW);
-	SetForegroundWindow(m_hwnd);
-	SetFocus(m_hwnd);
+	ShowWindow(this->m_hwnd, SW_SHOW);
+	SetForegroundWindow(this->m_hwnd);
+	SetFocus(this->m_hwnd);
 
 	//Hide the mouse cursor
 	ShowCursor(false);
@@ -240,11 +239,11 @@ void SystemClass::ShutdownWindows()
 	}
 
 	//Remove the window
-	DestroyWindow(m_hwnd);
-	m_hwnd = NULL;
+	DestroyWindow(this->m_hwnd);
+	this->m_hwnd = NULL;
 
 	//Remove the application instance
-	UnregisterClass(m_applicationName, m_hinstance);
+	UnregisterClass(this->m_applicationName, this->m_hinstance);
 	m_hinstance = NULL;
 
 	//Release the pointer to this class
