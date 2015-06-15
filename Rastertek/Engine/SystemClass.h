@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: systemclass.h
+// Filename: SystemClass.h
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _SYSTEMCLASS_H_
 #define _SYSTEMCLASS_H_
@@ -58,5 +58,5 @@ static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 /////////////
 // GLOBALS //
 /////////////
-static SystemClass* ApplicationHandle = NULL;
+static SystemClass* ApplicationHandle = nullptr;
 #endif

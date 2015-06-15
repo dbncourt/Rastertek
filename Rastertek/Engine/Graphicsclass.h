@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: graphicsclass.h
+// Filename: GraphicsClass.h
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
@@ -8,6 +8,9 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "D3DClass.h"
+#include "CameraClass.h"
+#include "ModelClass.h"
+#include "ColorShaderClass.h"
 
 /////////////
 // GLOBALS //
@@ -26,6 +29,9 @@ class GraphicsClass
 
 private:
 	D3DClass* m_D3D;
+	CameraClass* m_Camera;
+	ModelClass* m_Model;
+	ColorShaderClass* m_ColorShader;
 
 public:
 	GraphicsClass();

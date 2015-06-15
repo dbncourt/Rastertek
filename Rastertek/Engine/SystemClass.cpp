@@ -1,10 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: SystemClass.cpp
+////////////////////////////////////////////////////////////////////////////////
 #include "SystemClass.h"
 
 
 SystemClass::SystemClass()
 {
-	this->m_Input = NULL;
-	this->m_Graphics = NULL;
+	this->m_Input = nullptr;
+	this->m_Graphics = nullptr;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -25,7 +28,7 @@ bool SystemClass::Initialize()
 	screenHeight = 0;
 
 	//Initialize the windows API
-	InitializeWindows(screenWidth, screenHeight);
+	SystemClass::InitializeWindows(screenWidth, screenHeight);
 
 	//Create the input object. This object will be used to handle reading the keyboard input from the user
 	this->m_Input = new InputClass;
@@ -54,18 +57,18 @@ void SystemClass::Shutdown()
 	{
 		this->m_Graphics->Shutdown();
 		delete this->m_Graphics;
-		this->m_Graphics = NULL;
+		this->m_Graphics = nullptr;
 	}
 
 	//Release the input object
 	if (this->m_Input)
 	{
 		delete this->m_Input;
-		this->m_Input = NULL;
+		this->m_Input = nullptr;
 	}
 
 	// Shutdown the window.
-	ShutdownWindows();
+	SystemClass::ShutdownWindows();
 	
 	return;
 }
@@ -83,7 +86,7 @@ void SystemClass::Run()
 	while (!done)
 	{
 		//Handle the windows messages
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -171,11 +174,11 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = m_hinstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hIcon = LoadIcon(nullptr, IDI_WINLOGO);
 	wc.hIconSm = wc.hIcon;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszMenuName = NULL;
+	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = this->m_applicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
@@ -215,7 +218,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 	
 	//Create the window with the screen settings and get the handle of it
-	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, NULL, NULL, this->m_hinstance, NULL);
+	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, nullptr, nullptr, this->m_hinstance, NULL);
 
 	//Bring the window up on the screen and set it as main focus
 	ShowWindow(this->m_hwnd, SW_SHOW);
@@ -235,19 +238,19 @@ void SystemClass::ShutdownWindows()
 	//Fix the display settings if leaving full screen mode
 	if (FULL_SCREEN)
 	{
-		ChangeDisplaySettings(NULL, 0);
+		ChangeDisplaySettings(nullptr, 0);
 	}
 
 	//Remove the window
 	DestroyWindow(this->m_hwnd);
-	this->m_hwnd = NULL;
+	this->m_hwnd = nullptr;
 
 	//Remove the application instance
 	UnregisterClass(this->m_applicationName, this->m_hinstance);
-	m_hinstance = NULL;
+	m_hinstance = nullptr;
 
 	//Release the pointer to this class
-	ApplicationHandle = NULL;
+	ApplicationHandle = nullptr;
 
 	return;
 }

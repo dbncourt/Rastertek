@@ -1,19 +1,20 @@
+
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: d3dclass.cpp
+// Filename: D3DClass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "D3DClass.h"
 
 
 D3DClass::D3DClass()
 {
-	this->m_swapChain = NULL;
-	this->m_device = NULL;
-	this->m_deviceContext = NULL;
-	this->m_renderTargetView = NULL;
-	this->m_depthStencilBuffer = NULL;
-	this->m_depthStencilState = NULL;
-	this->m_depthStencilView = NULL;
-	this->m_rasterState = NULL;
+	this->m_swapChain = nullptr;
+	this->m_device = nullptr;
+	this->m_deviceContext = nullptr;
+	this->m_renderTargetView = nullptr;
+	this->m_depthStencilBuffer = nullptr;
+	this->m_depthStencilState = nullptr;
+	this->m_depthStencilView = nullptr;
+	this->m_rasterState = nullptr;
 }
 
 
@@ -129,19 +130,19 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//Release the display mode list
 	delete[] displayModeList;
-	displayModeList = NULL;
+	displayModeList = nullptr;
 
 	//Release the adapter output
 	adapterOutput->Release();
-	adapterOutput = NULL;
+	adapterOutput = nullptr;
 
 	//Release the adapter
 	adapter->Release();
-	adapter = NULL;
+	adapter = nullptr;
 
 	//Release the factory
 	factory->Release();
-	factory = NULL;
+	factory = nullptr;
 	
 	//Initialize the swap chain description
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -195,7 +196,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
 	//Create the swap chain, Direct3D device, and Direct3D device context
-	result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, &this->m_swapChain, &this->m_device, NULL, &this->m_deviceContext);
+	result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, &featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, &this->m_swapChain, &this->m_device, nullptr, &this->m_deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -209,14 +210,14 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Create the render target view with the back buffer pointer
-	result = this->m_device->CreateRenderTargetView(backBufferPtr, NULL, &this->m_renderTargetView);
+	result = this->m_device->CreateRenderTargetView(backBufferPtr, nullptr, &this->m_renderTargetView);
 	if (FAILED(result))
 	{
 		return false;
 	}
 	//Release pointer to the back buffer as we no longer need it
 	backBufferPtr->Release();
-	backBufferPtr = NULL;
+	backBufferPtr = nullptr;
 
 	//Initialize the description of the depth buffer
 	ZeroMemory(&depthBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
@@ -235,7 +236,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	depthBufferDesc.MiscFlags = 0;
 
 	//Create the texture for the depth buffer using the filled out description
-	result = this->m_device->CreateTexture2D(&depthBufferDesc, NULL, &this->m_depthStencilBuffer);
+	result = this->m_device->CreateTexture2D(&depthBufferDesc, nullptr, &this->m_depthStencilBuffer);
 	if (FAILED(result))
 	{
 		return false;
@@ -331,7 +332,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	//Create the projection matrix for 3d rendering
-	D3DXMatrixPerspectiveFovLH(&this->m_worldMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
+	D3DXMatrixPerspectiveFovLH(&this->m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
 
 	//Initialize the world matrix to the identity matrix
 	D3DXMatrixIdentity(&this->m_worldMatrix);
@@ -354,49 +355,49 @@ void D3DClass::Shutdown()
 	if (this->m_rasterState)
 	{
 		this->m_rasterState->Release();
-		this->m_rasterState = NULL;
+		this->m_rasterState = nullptr;
 	}
 
 	if (this->m_depthStencilView)
 	{
 		this->m_depthStencilView->Release();
-		this->m_depthStencilView = NULL;
+		this->m_depthStencilView = nullptr;
 	}
 
 	if (this->m_depthStencilState)
 	{
 		this->m_depthStencilState->Release();
-		this->m_depthStencilState = NULL;
+		this->m_depthStencilState = nullptr;
 	}
 
 	if (this->m_depthStencilBuffer)
 	{
 		this->m_depthStencilBuffer->Release();
-		this->m_depthStencilBuffer = NULL;
+		this->m_depthStencilBuffer = nullptr;
 	}
 
 	if (this->m_renderTargetView)
 	{
 		this->m_renderTargetView->Release();
-		this->m_renderTargetView = NULL;
+		this->m_renderTargetView = nullptr;
 	}
 
 	if (this->m_deviceContext)
 	{
 		this->m_deviceContext->Release();
-		this->m_deviceContext = NULL;
+		this->m_deviceContext = nullptr;
 	}
 
 	if (this->m_device)
 	{
 		this->m_device->Release();
-		this->m_device = NULL;
+		this->m_device = nullptr;
 	}
 
 	if (this->m_swapChain)
 	{
 		this->m_swapChain->Release();
-		this->m_swapChain = NULL;
+		this->m_swapChain = nullptr;
 	}
 	return;
 }
