@@ -163,7 +163,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	ApplicationHandle = this;
 
 	//Get the instance of this application
-	this->m_hinstance = GetModuleHandle(NULL);
+	this->m_hinstance = GetModuleHandle(nullptr);
 
 	//Give the application a name
 	this->m_applicationName = L"Engine";
@@ -218,7 +218,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 	
 	//Create the window with the screen settings and get the handle of it
-	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, nullptr, nullptr, this->m_hinstance, NULL);
+	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, nullptr, nullptr, this->m_hinstance, nullptr);
 
 	//Bring the window up on the screen and set it as main focus
 	ShowWindow(this->m_hwnd, SW_SHOW);

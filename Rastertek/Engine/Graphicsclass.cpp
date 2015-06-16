@@ -9,7 +9,7 @@ GraphicsClass::GraphicsClass()
 	this->m_D3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Model = nullptr;
-	this->m_ColorShader = nullptr;
+	this->m_TextureShader = nullptr;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
@@ -54,23 +54,23 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object
-	if (!this->m_Model->Initialize(this->m_D3D->GetDevice()))
+	if (!this->m_Model->Initialize(this->m_D3D->GetDevice(), L"seafloor.dds"))
 	{
-		MessageBox(hwnd, L"Could not initialize the model object", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
 
 	//Create the color shader object
-	this->m_ColorShader = new ColorShaderClass;
-	if (!this->m_ColorShader)
+	this->m_TextureShader = new TextureShaderClass;
+	if (!this->m_TextureShader)
 	{
 		return false;
 	}
 
 	//Initialize the color shader object
-	if (!this->m_ColorShader->Initialize(this->m_D3D->GetDevice(), hwnd))
+	if (!this->m_TextureShader->Initialize(this->m_D3D->GetDevice(), hwnd))
 	{
-		MessageBox(hwnd, L"Could not initialize the color shader object", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -80,11 +80,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	//Release the color shader object
-	if (this->m_ColorShader)
+	if (this->m_TextureShader)
 	{
-		this->m_ColorShader->Shutdown();
-		delete this->m_ColorShader;
-		this->m_ColorShader = nullptr;
+		this->m_TextureShader->Shutdown();
+		delete this->m_TextureShader;
+		this->m_TextureShader = nullptr;
 	}
 
 	//Release the model object
@@ -139,7 +139,7 @@ bool GraphicsClass::Render()
 	this->m_Model->Render(this->m_D3D->GetDeviceContext());
 
 	//Render the model using the color shader
-	if (!this->m_ColorShader->Render(this->m_D3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix))
+	if (!this->m_TextureShader->Render(this->m_D3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture()))
 	{
 		return false;
 	}

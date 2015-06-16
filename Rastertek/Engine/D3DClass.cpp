@@ -77,7 +77,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output(monitor)
-	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, nullptr);
 	if (FAILED(result))
 	{
 		return false;
@@ -349,7 +349,7 @@ void D3DClass::Shutdown()
 	//Before shutting down set to windowed mode or when you release the swap chain it will throw an exception
 	if (this->m_swapChain)
 	{
-		this->m_swapChain->SetFullscreenState(FALSE, NULL);
+		this->m_swapChain->SetFullscreenState(FALSE, nullptr);
 	}
 
 	if (this->m_rasterState)
