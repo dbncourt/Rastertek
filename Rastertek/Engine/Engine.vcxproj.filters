@@ -1,97 +1,115 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Archivos de código fuente">
+    <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Archivos de encabezado">
+    <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Archivos de recursos">
+    <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Archivos de código fuente</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SystemClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3DClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="ColorShader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Direct3D.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModelClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColorShaderClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="TextureShader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CameraClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextureClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextureShaderClass.cpp">
-      <Filter>Archivos de código fuente</Filter>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SystemClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="System.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3DClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="ColorShader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Direct3D.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ModelClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ColorShaderClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="TextureShader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureShaderClass.h">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Color.vs">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="Color.ps">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="Texture.vs">
-      <Filter>Archivos de recursos</Filter>
-    </None>
-    <None Include="Texture.ps">
-      <Filter>Archivos de recursos</Filter>
-    </None>
+    <ClInclude Include="LightShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
-      <Filter>Archivos de recursos</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ColorVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="ColorPixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="LightVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="LightPixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

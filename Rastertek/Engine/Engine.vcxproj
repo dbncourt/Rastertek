@@ -147,36 +147,72 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraClass.cpp" />
-    <ClCompile Include="ColorShaderClass.cpp" />
-    <ClCompile Include="D3DClass.cpp" />
-    <ClCompile Include="GraphicsClass.cpp" />
-    <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ColorShader.cpp" />
+    <ClCompile Include="Direct3D.cpp" />
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="LightShader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ModelClass.cpp" />
-    <ClCompile Include="SystemClass.cpp" />
-    <ClCompile Include="TextureClass.cpp" />
-    <ClCompile Include="TextureShaderClass.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureShader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraClass.h" />
-    <ClInclude Include="ColorShaderClass.h" />
-    <ClInclude Include="D3DClass.h" />
-    <ClInclude Include="GraphicsClass.h" />
-    <ClInclude Include="InputClass.h" />
-    <ClInclude Include="ModelClass.h" />
-    <ClInclude Include="SystemClass.h" />
-    <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="TextureShaderClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Color.ps" />
-    <None Include="Color.vs" />
-    <None Include="Texture.ps" />
-    <None Include="Texture.vs" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="ColorShader.h" />
+    <ClInclude Include="Direct3D.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="LightShader.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ColorVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="ColorPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="LightPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="LightVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TexturePixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TextureVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
