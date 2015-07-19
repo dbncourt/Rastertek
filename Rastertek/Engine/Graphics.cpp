@@ -82,7 +82,9 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 	this->m_Light->SetAmbientColor(D3DXCOLOR(0.15f, 0.15f, 0.15f, 1.0f));
 	this->m_Light->SetDiffuseColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	this->m_Light->SetLightDirection(D3DXVECTOR3(1.0f, 0.0f, 0.0f));
+	this->m_Light->SetDirection(D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+	this->m_Light->SetSpecularColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	this->m_Light->SetSpecularPower(32.0f);
 
 	return true;
 }
@@ -144,6 +146,7 @@ bool Graphics::Frame()
 
 bool Graphics::Render(float rotation)
 {
+	bool result;
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX worldMatrix;
@@ -166,7 +169,8 @@ bool Graphics::Render(float rotation)
 	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
 
 	//Render the model using the color shader
-	if (!this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture(), this->m_Light->GetLightDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor()))
+	result = this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor(), this->m_Camera->GetPosition(), this->m_Light->GetSpecularColor(), this->m_Light->GetSpecularPower());
+	if (!result)
 	{
 		return false;
 	}
