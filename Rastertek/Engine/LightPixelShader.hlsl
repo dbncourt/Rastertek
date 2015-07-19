@@ -66,17 +66,17 @@ float4 main(PixelInputType input) : SV_TARGET
 		//Saturate the ambient and diffuse color
 		color = saturate(color);
 
-		//Calculare the reflection vector based on the light intensity, normal vector and light direction
+		//Calculate the reflection vector based on the light intensity, normal vector and light direction
 		reflection = normalize(2 * lightIntensity * input.normal - lightDir);
 
 		//Determine the amount of specular light based on the reflection vector, viewing direction and specular power.
 		specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
 	}
 
-	// Multiply the texture pixel and the final diffuse color to get the final pixel color result.
+	// Multiply the texture pixel and the input color to get the textured result.
 	color *= textureColor;
 
-	//Saturate the final light color
+	// Add the specular component last to the output color.
 	color = saturate(color + specular);
 
 	return color;

@@ -63,13 +63,13 @@ PixelInputType main(VertexInputType input)
 	// Normalize the normal vector.
 	output.normal = normalize(output.normal);
 
-	//Calculate the position of the vertex in the world
+	// Calculate the position of the vertex in the world
 	worldPosition = mul(input.position, worldMatrix);
 
-	//Determine the viewing direction based on the position of the camera and the position of the vertex in the world
+	// Determine the viewing direction based on the position of the camera and the position of the vertex in the world
 	output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
 
-	//Normalize the viewing direction vector
+	// Normalize the viewing direction vector
 	output.viewDirection = normalize(output.viewDirection);
 
 	return output;
