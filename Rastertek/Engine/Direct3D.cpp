@@ -12,6 +12,7 @@ Direct3D::Direct3D()
 	this->m_renderTargetView = nullptr;
 	this->m_depthStencilBuffer = nullptr;
 	this->m_depthStencilState = nullptr;
+	this->m_depthDisabledStencilState = nullptr;
 	this->m_depthStencilView = nullptr;
 	this->m_rasterizerState = nullptr;
 }
@@ -29,6 +30,7 @@ Direct3D::~Direct3D()
 bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, float screenDepth, float screenNear)
 {
 	HRESULT result;
+
 	IDXGIFactory* factory;
 	IDXGIAdapter* adapter;
 	IDXGIOutput* adapterOutput;
@@ -38,16 +40,6 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	unsigned int denominator;
 	unsigned int stringLength;
 	int error;
-	DXGI_MODE_DESC* displayModeList;
-	DXGI_ADAPTER_DESC adapterDesc;
-	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-	D3D_FEATURE_LEVEL featureLevel;
-	ID3D11Texture2D* backBufferPtr;
-	D3D11_TEXTURE2D_DESC depthBufferDesc;
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-	D3D11_RASTERIZER_DESC rasterDesc;
-	D3D11_VIEWPORT viewport;
 	float fieldOfView;
 	float screenAspect;
 
@@ -83,6 +75,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Create a list to hold all the possible display modes for this monitor/video card combination
+	DXGI_MODE_DESC* displayModeList;
 	displayModeList = new DXGI_MODE_DESC[numModes];
 	if (!displayModeList)
 	{
@@ -111,6 +104,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Get the adapter (video card) description
+	DXGI_ADAPTER_DESC adapterDesc;
 	result = adapter->GetDesc(&adapterDesc);
 	if (FAILED(result))
 	{
@@ -144,6 +138,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	factory = nullptr;
 	
 	//Initialize the swap chain description
+	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	//Set to a single back buffer
@@ -192,6 +187,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	swapChainDesc.Flags = 0;
 
 	//Set the feature level to DirectX 11
+	D3D_FEATURE_LEVEL featureLevel;
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
 	//Create the swap chain, Direct3D device, and Direct3D device context
@@ -202,6 +198,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Get the pointer to the back buffer
+	ID3D11Texture2D* backBufferPtr;
 	result = this->m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 	if (FAILED(result))
 	{
@@ -219,6 +216,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	backBufferPtr = nullptr;
 
 	//Initialize the description of the depth buffer
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	ZeroMemory(&depthBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
 	//Set up the description of the depth buffer
@@ -242,6 +240,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Initialize the description of the stencil state
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
 	//Set up the description of the stencil state
@@ -275,7 +274,35 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//Set the depth stencil state
 	this->m_deviceContext->OMSetDepthStencilState(this->m_depthStencilState, 1);
 
+	//Create the disabled stencil desc
+	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+	//Clear the second depth stencil state before setting the parameters
+	ZeroMemory(&depthDisabledStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+
+	//Now create a second depth stencil state which turns off the Z-buffer for 2D rendering. The only difference is that DepthEnable is set to false, all other parameters are the same as the other depth stencil state
+	depthDisabledStencilDesc.DepthEnable = false;
+	depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDisabledStencilDesc.StencilEnable = true;
+	depthDisabledStencilDesc.StencilReadMask = 0xFF;
+	depthDisabledStencilDesc.StencilWriteMask = 0xFF;
+	depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	result = this->m_device->CreateDepthStencilState(&depthDisabledStencilDesc, &this->m_depthDisabledStencilState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
 	//Initialize the depth stencil view
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
 
 	//Set up the depth stencil view description
@@ -294,6 +321,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	this->m_deviceContext->OMSetRenderTargets(1, &this->m_renderTargetView, this->m_depthStencilView);
 
 	//Setup the raster description which will determine how and what polygons will be drawn
+	D3D11_RASTERIZER_DESC rasterDesc;
+	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterDesc.AntialiasedLineEnable = false;
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 	rasterDesc.DepthBias = 0;
@@ -316,6 +345,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	this->m_deviceContext->RSSetState(this->m_rasterizerState);
 
 	//Setup the viewport for rendering
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.Width = (float)screenWidth;
 	viewport.Height = (float)screenHeight;
 	viewport.MinDepth = 0.0f;
@@ -367,6 +398,12 @@ void Direct3D::Shutdown()
 	{
 		this->m_depthStencilState->Release();
 		this->m_depthStencilState = nullptr;
+	}
+
+	if (this->m_depthDisabledStencilState)
+	{
+		this->m_depthDisabledStencilState->Release();
+		this->m_depthDisabledStencilState = nullptr;
 	}
 
 	if (this->m_depthStencilBuffer)
@@ -462,4 +499,14 @@ void Direct3D::GetVideoCardInfo(char* cardName, int& memory)
 {
 	strcpy_s(cardName, 128, this->m_videoCardDescription);
 	memory = this->m_videoCardMemory;
+}
+
+void Direct3D::TurnZBufferOn()
+{
+	this->m_deviceContext->OMSetDepthStencilState(this->m_depthStencilState, 1);
+}
+
+void Direct3D::TurnZBufferOff()
+{
+	this->m_deviceContext->OMSetDepthStencilState(this->m_depthDisabledStencilState, 1);
 }
