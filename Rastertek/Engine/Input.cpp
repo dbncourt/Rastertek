@@ -25,21 +25,18 @@ void Input::Initialize()
 	{
 		this->m_keys[i] = false;
 	}
-	return;
 }
 
 void Input::KeyDown(unsigned int input)
 {
 	//If a key is pressed then save that state in the key array
 	this->m_keys[input] = true;
-	return;
 }
 
 void Input::KeyUp(unsigned int input)
 {
 	//If a key is released then clear that state in the key array
 	this->m_keys[input] = false;
-	return;
 }
 
 bool Input::IsKeyDown(unsigned int key)

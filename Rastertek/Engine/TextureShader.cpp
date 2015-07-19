@@ -255,7 +255,6 @@ void TextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd
 
 	//Pop a message up on the screen to notify the user to check the text file for compile errors
 	MessageBox(hwnd, L"Error compiling shader. Check  shader-error.txt for message.", shaderFilename, MB_OK);
-	return;
 }
 
 bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
@@ -314,6 +313,4 @@ void TextureShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCo
 
 	//Render the triangle
 	deviceContext->DrawIndexed(indexCount, 0, 0);
-
-	return;
 }
