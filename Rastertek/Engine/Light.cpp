@@ -16,14 +16,14 @@ Light::~Light()
 {
 }
 
-void Light::SetDiffuseColor(D3DXCOLOR diffuseColor)
+D3DXCOLOR Light::GetAmbientColor()
 {
-	this->m_diffuseColor = diffuseColor;
+	return this->m_ambientColor;
 }
 
-void Light::SetLightDirection(D3DXVECTOR3 lightDirection)
+void Light::SetAmbientColor(D3DXCOLOR ambientColor)
 {
-	this->m_lightDirection = lightDirection;
+	this->m_ambientColor = ambientColor;
 }
 
 D3DXCOLOR Light::GetDiffuseColor()
@@ -31,7 +31,17 @@ D3DXCOLOR Light::GetDiffuseColor()
 	return this->m_diffuseColor;
 }
 
+void Light::SetDiffuseColor(D3DXCOLOR diffuseColor)
+{
+	this->m_diffuseColor = diffuseColor;
+}
+
 D3DXVECTOR3 Light::GetLightDirection()
 {
 	return this->m_lightDirection;
+}
+
+void Light::SetLightDirection(D3DXVECTOR3 lightDirection)
+{
+	this->m_lightDirection = lightDirection;
 }
