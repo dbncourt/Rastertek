@@ -93,23 +93,27 @@ void Graphics::Shutdown()
 	}
 }
 
-bool Graphics::Frame()
-{
-	static float rotation = 0.0f;
-
-	//Update the rotation variable each frame
-	rotation += (float)D3DX_PI * 0.005f;
-	if (rotation > 360.0f)
-	{
-		rotation = -360.0f;
-	}
-	//Render the graphics scene
-	return Graphics::Render(rotation);
-}
-
-bool Graphics::Render(float rotation)
+bool Graphics::Frame(int mouseX, int mouseY)
 {
 	bool result;
+
+	//Set the location of the mouse
+	result = this->m_Text->SetMousePosition(mouseX, mouseY, this->m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+	//Set the position of the camera
+	this->m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -10.0f));
+
+	return true;
+}
+
+bool Graphics::Render()
+{
+	bool result;
+
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX worldMatrix;
@@ -146,11 +150,45 @@ bool Graphics::Render(float rotation)
 	//Turn the Z-Buffer back on now that all 2D rendering has completed
 	this->m_Direct3D->TurnZBufferOn();
 
-	//Rotate the world matrix by the rotation value so that the triangle will spin
-	D3DXMatrixRotationY(&worldMatrix, rotation);
-
 	//Present the rendered scene to the screen
 	this->m_Direct3D->EndScene();
 
+	return true;
+}
+
+bool Text::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
+{
+	bool result;
+
+	char tempString[16];
+	char mouseString[16];
+
+	//Convert the mouseX integer to string format
+	_itoa_s(mouseX, tempString, 10);
+
+	//Setup the mouseX string
+	strcpy_s(mouseString, "Mouse X: ");
+	strcat_s(mouseString, tempString); 
+
+	//Update the sentence vertex buffer with the new string information
+	result = Text::UpdateSentence(m_sentence1, mouseString, D3DXVECTOR2(20.0f, 20.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Convert the mouseY integer to string format
+	_itoa_s(mouseY, tempString, 10);
+
+	//Setup the mouseY string
+	strcpy_s(mouseString, "Mouse Y: ");
+	strcat_s(mouseString, tempString);
+
+	//Update the sentence vertex buffer with the new string information
+	result = Text::UpdateSentence(m_sentence2, mouseString, D3DXVECTOR2(20.0f, 40.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), deviceContext);
+	if (!result)
+	{
+		return false;
+	}
 	return true;
 }

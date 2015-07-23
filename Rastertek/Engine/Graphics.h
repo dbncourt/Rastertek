@@ -39,9 +39,8 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
-	bool Frame();
-
-private:
-	bool Render(float rotation);
+	
+	bool Frame(int mouseX, int mouseY);
+	bool Render();
 };
 #endif

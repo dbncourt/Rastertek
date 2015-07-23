@@ -20,6 +20,8 @@ System::~System()
 
 bool System::Initialize()
 {
+	bool result;
+
 	int screenWidth;
 	int screenHeight;
 
@@ -38,7 +40,12 @@ bool System::Initialize()
 	}
 
 	//Initialize the input object
-	this->m_Input->Initialize();
+	result = this->m_Input->Initialize(this->m_hinstance, this->m_hwnd, screenWidth, screenHeight);
+	if (!result)
+	{
+		MessageBox(this->m_hwnd, L"Could not initialize the input object", L"Error", MB_OK);
+		return false;
+	}
 
 	//Create the graphics object. This object will handle rendering all the graphics for this application
 	this->m_Graphics = new Graphics();
@@ -63,6 +70,7 @@ void System::Shutdown()
 	//Release the input object
 	if (this->m_Input)
 	{
+		this->m_Input->Shutdown();
 		delete this->m_Input;
 		this->m_Input = nullptr;
 	}
@@ -73,6 +81,8 @@ void System::Shutdown()
 
 void System::Run()
 {
+	bool result;
+
 	MSG msg;
 	bool done;
 
@@ -98,10 +108,18 @@ void System::Run()
 		else
 		{
 			//Otherwise, do the frame processing
-			if (!Frame())
+			result = Frame();
+			if (!result)
 			{
+				MessageBox(this->m_hwnd, L"Frame Processing Failed", L"Error", MB_OK);
 				done = true;
 			}
+		}
+
+		//Check if the user pressed escape and wants to quit
+		if (this->m_Input->IsEscapePressed())
+		{
+			done = true;
 		}
 	}
 }
@@ -109,15 +127,28 @@ void System::Run()
 bool System::Frame()
 {
 	bool result;
+	int mouseX;
+	int mouseY;
+
+	//Do the input frame processing
+	result = this->m_Input->Frame();
+	if (!result)
+	{
+		return false;
+	}
 	
-	//Check if the user pressed escape and wants to exit the application
-	if (this->m_Input->IsKeyDown(VK_ESCAPE))
+	//Get the location of the mouse from the input object
+	this->m_Input->GetMouseLocation(mouseX, mouseY);
+	
+	//Do the frame processing for the graphics object
+	result = this->m_Graphics->Frame(mouseX, mouseY);
+	if (!result)
 	{
 		return false;
 	}
 
-	//Do the frame processing for the graphics object
-	result = this->m_Graphics->Frame();
+	//Finally render the graphics to the screen
+	result = this->m_Graphics->Render();
 	if (!result)
 	{
 		return false;
@@ -128,26 +159,7 @@ bool System::Frame()
 
 LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-	switch (umsg)
-	{
-		//Check if a key has been pressed on the keyboard
-		case WM_KEYDOWN:
-		{
-			//If a key is pressed, send it to the input object so it can record that state.
-			this->m_Input->KeyDown((unsigned int)wParam);
-			return 0;
-		}
-		case WM_KEYUP:
-		{
-			//If a key is released, send it to the input object so it can record that state.
-			this->m_Input->KeyUp((unsigned int)wParam);
-			return 0;
-		}
-		default:
-		{
-			return DefWindowProc(hwnd, umsg, wParam, lParam);
-		}
-	}
+	return DefWindowProc(hwnd, umsg, wParam, lParam);
 }
 
 void System::InitializeWindows(int& screenWidth, int& screenHeight)
