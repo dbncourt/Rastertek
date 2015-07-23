@@ -304,7 +304,7 @@ void LightShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, 
 	errorMessage = nullptr;
 
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
+	MessageBox(hwnd, L"Error compiling shader.  Check Shader-Error.txt for message.", shaderFilename, MB_OK);
 }
 
 bool LightShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXCOLOR ambientColor, D3DXCOLOR diffuseColor, D3DXVECTOR3 cameraPosition, D3DXCOLOR specularColor, float specularPower)

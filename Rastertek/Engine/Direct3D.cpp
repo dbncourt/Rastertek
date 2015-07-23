@@ -15,6 +15,8 @@ Direct3D::Direct3D()
 	this->m_depthDisabledStencilState = nullptr;
 	this->m_depthStencilView = nullptr;
 	this->m_rasterizerState = nullptr;
+	this->m_alphaEnableBlendingState = nullptr;
+	this->m_alphaDisableBlendingState = nullptr;
 }
 
 
@@ -361,6 +363,37 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	fieldOfView = (float)D3DX_PI / 4.0f;
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
+	//Create and clear the blend state description
+	D3D11_BLEND_DESC blendStateDescription;
+	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+
+	//Create an alpha enabled blend state description
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+
+	//Create the blend state using the description
+	result = this->m_device->CreateBlendState(&blendStateDescription, &this->m_alphaEnableBlendingState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	//Modify the description to create an alpha disabled blend state description
+	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+
+	//Create the blend state using the description
+	result = this->m_device->CreateBlendState(&blendStateDescription, &this->m_alphaDisableBlendingState); 
+	if (FAILED(result))
+	{
+		return false;
+	}
+
 	//Create the projection matrix for 3d rendering
 	D3DXMatrixPerspectiveFovLH(&this->m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
 
@@ -380,6 +413,18 @@ void Direct3D::Shutdown()
 	if (this->m_swapChain)
 	{
 		this->m_swapChain->SetFullscreenState(FALSE, nullptr);
+	}
+
+	if (this->m_alphaDisableBlendingState)
+	{
+		this->m_alphaDisableBlendingState->Release();
+		this->m_alphaDisableBlendingState = nullptr;
+	}
+
+	if (this->m_alphaEnableBlendingState)
+	{
+		this->m_alphaEnableBlendingState->Release();
+		this->m_alphaEnableBlendingState = nullptr;
 	}
 
 	if (this->m_rasterizerState)
@@ -509,4 +554,32 @@ void Direct3D::TurnZBufferOn()
 void Direct3D::TurnZBufferOff()
 {
 	this->m_deviceContext->OMSetDepthStencilState(this->m_depthDisabledStencilState, 1);
+}
+
+void Direct3D::TurnOnAlphaBlending()
+{
+	float blendFactor[4];
+
+	//Setup the blend factor
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	//Turn on the alpha blending
+	this->m_deviceContext->OMSetBlendState(this->m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+}
+
+void Direct3D::TurnOffAlphaBlending()
+{
+	float blendFactor[4];
+
+	//Setup the blend factor
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	//Turn on the alpha blending
+	this->m_deviceContext->OMSetBlendState(this->m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 }
