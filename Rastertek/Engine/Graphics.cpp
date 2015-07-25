@@ -93,12 +93,19 @@ void Graphics::Shutdown()
 	}
 }
 
-bool Graphics::Frame(int mouseX, int mouseY)
+bool Graphics::Frame(int fps, int cpu, float frameTime)
 {
 	bool result;
 
-	//Set the location of the mouse
-	result = this->m_Text->SetMousePosition(mouseX, mouseY, this->m_Direct3D->GetDeviceContext());
+	//Set the frame per second.
+	result = this->m_Text->SetFps(fps, this->m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+	//Set the cpu usage.
+	result = this->m_Text->SetCpu(cpu, this->m_Direct3D->GetDeviceContext());
 	if (!result)
 	{
 		return false;

@@ -51,6 +51,9 @@ public:
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX orthoMatrix);
 	
+	bool SetFps(int fps, ID3D11DeviceContext* deviceContext);
+	bool SetCpu(int cpu, ID3D11DeviceContext* deviceContext);
+
 	bool SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext);
 
 private:

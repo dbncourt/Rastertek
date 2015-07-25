@@ -1,3 +1,6 @@
+///////////////////////////////////////////////////////////////////////////////
+// Filename: Text.cpp
+///////////////////////////////////////////////////////////////////////////////
 #include "Text.h"
 
 
@@ -368,6 +371,76 @@ bool Text::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sent
 
 	//Render the text using the font shader
 	result = this->m_FontShader->Render(deviceContext, sentence->indexCount, worldMatrix, this->m_baseViewMatrix, orthoMatrix, this->m_Font->GetTexture(), pixelColor);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Text::SetFps(int fps, ID3D11DeviceContext* deviceContext)
+{
+	bool result;
+
+	char tempString[16];
+	char fpsString[16];
+	D3DXCOLOR color;
+
+	//Truncate the fps to below 10,000
+	if (fps > 9999)
+	{
+		fps = 9999;
+	}
+
+	//Convert the fps integer to string format
+	_itoa_s(fps, tempString, 10);
+
+	//Setup the fps string
+	strcpy_s(fpsString, "Fps: ");
+	strcat_s(fpsString, tempString);
+
+	//If fps is 60 or above set the fps color to green
+	if (fps >= 60)
+	{
+		color = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+	}
+	//If fps is less than 60 and more than 30 then set the color to yellow
+	else if (fps < 60 && fps > 30)
+	{ 
+		color = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+	}
+	//If fps is less than 30 then set the color to red
+	else
+	{
+		color = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	}
+	
+	//Update the sentence vertex buffer with the new string information
+	result = Text::UpdateSentence(this->m_sentence1, fpsString, D3DXVECTOR2(20.0f, 20.0f), color, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Text::SetCpu(int cpu, ID3D11DeviceContext* deviceContext)
+{
+	bool result;
+
+	char tempString[16];
+	char cpuString[16];
+
+	//Convert the cpu integer to string format
+	_itoa_s(cpu, tempString, 10);
+
+	//Setup the cpu string
+	strcpy_s(cpuString, "Cpu: ");
+	strcat_s(cpuString, tempString);
+	strcat_s(cpuString, "%");
+
+	//Update the sentence vertex buffer with the new string information
+	result = Text::UpdateSentence(this->m_sentence2, cpuString, D3DXVECTOR2(20.0f, 40.0f), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), deviceContext);
 	if (!result)
 	{
 		return false;

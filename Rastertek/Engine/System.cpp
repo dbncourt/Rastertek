@@ -8,7 +8,9 @@ System::System()
 {
 	this->m_Input = nullptr;
 	this->m_Graphics = nullptr;
-	this->m_Sound = nullptr;
+	this->m_Fps = nullptr;
+	this->m_Cpu = nullptr;
+	this->m_Timer = nullptr;
 }
 
 System::System(const System& other)
@@ -33,14 +35,14 @@ bool System::Initialize()
 	//Initialize the windows API
 	System::InitializeWindows(screenWidth, screenHeight);
 
-	//Create the input object. This object will be used to handle reading the keyboard input from the user
+	//Create the Input object. This object will be used to handle reading the keyboard input from the user
 	this->m_Input = new Input();
 	if (!this->m_Input)
 	{
 		return false;
 	}
 
-	//Initialize the input object
+	//Initialize the Input object
 	result = this->m_Input->Initialize(this->m_hinstance, this->m_hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
@@ -48,32 +50,51 @@ bool System::Initialize()
 		return false;
 	}
 
-	//Create the graphics object. This object will handle rendering all the graphics for this application
+	//Create the Graphics object. This object will handle rendering all the graphics for this application
 	this->m_Graphics = new Graphics();
 	if (!this->m_Graphics)
 	{
 		return false;
 	}
 
-	//Initialize the graphics object
+	//Initialize the Graphics object
 	result = this->m_Graphics->Initialize(screenWidth, screenHeight, this->m_hwnd);
 	if (!result)
 	{
 		return false;
 	}
-
-	//Create the sound object
-	this->m_Sound = new Sound();
-	if (!this->m_Sound)
+	//Create the Fps object
+	this->m_Fps = new Fps();
+	if (!this->m_Fps)
 	{
 		return false;
 	}
 
-	//Initialize the sound object
-	result = this->m_Sound->Initialize(this->m_hwnd);
+	//Initialize the Fps object
+	this->m_Fps->Initialize();
+
+	//Create the Cpu object
+	this->m_Cpu = new Cpu();
+	if (!this->m_Cpu)
+	{
+		return false;
+	}
+
+	//Initialize the Cpu object
+	this->m_Cpu->Initialize();
+
+	//Create the Timer object
+	this->m_Timer = new Timer();
+	if (!this->m_Timer)
+	{
+		return false;
+	}
+
+	//Initialize the Timer object
+	result = this->m_Timer->Intialize();
 	if (!result)
 	{
-		MessageBox(this->m_hwnd, L"Could not initialize Direct Sound", L"Error", MB_OK);
+		MessageBox(this->m_hwnd, L"Could not initialize the Timer object", L"Error", MB_OK);
 		return false;
 	}
 	return true;
@@ -81,7 +102,29 @@ bool System::Initialize()
 
 void System::Shutdown()
 {
-	//Release the graphics object
+	//Release the Timer object
+	if (this->m_Timer)
+	{
+		delete this->m_Timer;
+		this->m_Timer = nullptr;
+	}
+
+	//Release the Cpu object
+	if (this->m_Cpu)
+	{
+		this->m_Cpu->Shutdown();
+		delete this->m_Cpu;
+		this->m_Cpu = nullptr;
+	}
+
+	//Release the Fps object
+	if (this->m_Fps)
+	{
+		delete this->m_Fps;
+		this->m_Fps = nullptr;
+	}
+
+	//Release the Graphics object
 	if (this->m_Graphics)
 	{
 		this->m_Graphics->Shutdown();
@@ -89,20 +132,12 @@ void System::Shutdown()
 		this->m_Graphics = nullptr;
 	}
 
-	//Release the input object
+	//Release the Input object
 	if (this->m_Input)
 	{
 		this->m_Input->Shutdown();
 		delete this->m_Input;
 		this->m_Input = nullptr;
-	}
-
-	//Release the sound object
-	if (this->m_Sound)
-	{
-		this->m_Sound->Shutdown();
-		delete this->m_Sound;
-		this->m_Sound = nullptr;
 	}
 
 	// Shutdown the window.
@@ -157,8 +192,11 @@ void System::Run()
 bool System::Frame()
 {
 	bool result;
-	int mouseX;
-	int mouseY;
+	
+	//Update the system stats
+	this->m_Timer->Frame();
+	this->m_Fps->Frame();
+	this->m_Cpu->Frame();
 
 	//Do the input frame processing
 	result = this->m_Input->Frame();
@@ -167,11 +205,8 @@ bool System::Frame()
 		return false;
 	}
 	
-	//Get the location of the mouse from the input object
-	this->m_Input->GetMouseLocation(mouseX, mouseY);
-	
-	//Do the frame processing for the graphics object
-	result = this->m_Graphics->Frame(mouseX, mouseY);
+	//Do the frame processing for the Graphics object
+	result = this->m_Graphics->Frame(this->m_Fps->GetFps(), this->m_Cpu->GetCpuPercentage(), this->m_Timer->GetTime());
 	if (!result)
 	{
 		return false;
@@ -183,7 +218,6 @@ bool System::Frame()
 	{
 		return false;
 	}
-
 	return true;
 }
 

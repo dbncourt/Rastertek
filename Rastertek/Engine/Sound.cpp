@@ -1,3 +1,6 @@
+///////////////////////////////////////////////////////////////////////////////
+// Filename: Sound.cpp
+///////////////////////////////////////////////////////////////////////////////
 #include "Sound.h"
 
 
@@ -334,7 +337,7 @@ bool Sound::PlayWaveFile()
 	}
 
 	//Play the contents of the secondary sound buffer
-	result = this->m_secondaryBuffer->Play(0, 0, DSBPLAY_LOOPING);
+	result = this->m_secondaryBuffer->Play(0, 0, DSBPLAY_LOOPING); //Set last value to DSBPLAY_LOOPING for looping.
 	if (FAILED(result))
 	{
 		return false;
