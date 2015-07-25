@@ -19,9 +19,8 @@
 ///////////////////////
 #include "Input.h"
 #include "Graphics.h"
-#include "Fps.h"
-#include "Cpu.h"
 #include "Timer.h"
+#include "Position.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,9 +36,8 @@ private:
 
 	Input* m_Input;
 	Graphics* m_Graphics;
-	Fps* m_Fps;
-	Cpu* m_Cpu;
 	Timer* m_Timer;
+	Position* m_Position;
 
 public:
 	System();

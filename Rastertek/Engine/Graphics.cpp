@@ -9,6 +9,11 @@ Graphics::Graphics()
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Text = nullptr;
+	this->m_Model = nullptr;
+	this->m_LightShader = nullptr;
+	this->m_Light = nullptr;
+	this->m_ModelList = nullptr;
+	this->m_Frustum = nullptr;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -61,7 +66,69 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	result = this->m_Text->Initialize(this->m_Direct3D->GetDevice(), this->m_Direct3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the Text object.", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the Model object
+	this->m_Model = new Model();
+	if (!this->m_Model)
+	{
+		return false;
+	}
+
+	//Initialize the Model object
+	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "sphere.txt", L"seafloor.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the Model object", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the LightShader object
+	this->m_LightShader = new LightShader();
+	if (!this->m_LightShader)
+	{
+		return false;
+	}
+
+	//Initialize the LightShader object
+	result = this->m_LightShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize LightShader the object", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the Light object
+	this->m_Light = new Light();
+	if (!this->m_Light)
+	{
+		return false;
+	}
+
+	//Initialize the Light object
+	this->m_Light->SetDirection(D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+
+	//Create the ModelList object
+	this->m_ModelList = new ModelList();
+	if (!this->m_ModelList)
+	{
+		return false;
+	}
+
+	//Initialize the ModelList object
+	result = this->m_ModelList->Initialize(25);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize ModelList the object", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the Frustum object
+	this->m_Frustum = new Frustum();
+	if (!this->m_Frustum)
+	{
 		return false;
 	}
 	return true;
@@ -69,6 +136,44 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void Graphics::Shutdown()
 {
+	//Release the Frustum object
+	if (this->m_Frustum)
+	{
+		delete this->m_Frustum;
+		this->m_Frustum = nullptr;
+	}
+
+	//Release the ModelList object
+	if (this->m_ModelList)
+	{
+		this->m_ModelList->Shutdown();
+		delete this->m_ModelList;
+		this->m_ModelList = nullptr;
+	}
+
+	//Release the Light Object
+	if (this->m_Light)
+	{
+		delete this->m_Light;
+		this->m_Light = nullptr;
+	}
+
+	//Release the LightShader object
+	if (this->m_LightShader)
+	{
+		this->m_LightShader->Shutdown();
+		delete this->m_LightShader;
+		this->m_LightShader = nullptr;
+	}
+
+	//Release the model object
+	if (this->m_Model)
+	{
+		this->m_Model->Shutdown();
+		delete this->m_Model;
+		this->m_Model = nullptr;
+	}
+
 	//Release the Text object
 	if (this->m_Text)
 	{
@@ -77,7 +182,7 @@ void Graphics::Shutdown()
 		this->m_Text = nullptr;
 	}
 
-	//Release the camera object
+	//Release the Camera object
 	if (this->m_Camera)
 	{
 		delete this->m_Camera;
@@ -93,26 +198,13 @@ void Graphics::Shutdown()
 	}
 }
 
-bool Graphics::Frame(int fps, int cpu, float frameTime)
+bool Graphics::Frame(float rotationY)
 {
-	bool result;
-
-	//Set the frame per second.
-	result = this->m_Text->SetFps(fps, this->m_Direct3D->GetDeviceContext());
-	if (!result)
-	{
-		return false;
-	}
-
-	//Set the cpu usage.
-	result = this->m_Text->SetCpu(cpu, this->m_Direct3D->GetDeviceContext());
-	if (!result)
-	{
-		return false;
-	}
-
-	//Set the position of the camera
+	//Set the position of the Camera
 	this->m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -10.0f));
+
+	//Set the rotation of the Camera
+	this->m_Camera->SetRotation(D3DXVECTOR3(0.0f, rotationY, 0.0f));
 
 	return true;
 }
@@ -138,6 +230,53 @@ bool Graphics::Render()
 	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
 	this->m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
+	//Construct the Frustum
+	this->m_Frustum->ConstructFrustum(SCREEN_DEPTH, projectionMatrix, viewMatrix);
+
+	//Get the number of models that will be rendered
+
+	//Initialize the count of models that have been rendered
+	int renderCount = 0;
+
+	//Go through all the models and render them only if they can be seen by the camera view
+	for (int index = 0; index < this->m_ModelList->GetModelCount(); index++)
+	{
+		bool renderModel;
+
+		D3DXVECTOR3 position;
+		D3DXCOLOR color;
+
+		//Get the position and color of the sphere model at this index
+		this->m_ModelList->GetData(index, position, color);
+
+		//Check if the sphere model is in the view frustum
+		renderModel = this->m_Frustum->CheckSphere(position, 1.0f);//Set the radius of the sphere to 1.0f since is already known
+
+		//If it can be seen then render it, else skip this model and check the next sphere
+		if (renderModel)
+		{
+			//Move the model to the location it should be rendered at
+			D3DXMatrixTranslation(&worldMatrix, position.x, position.y, position.z);
+
+			//Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing
+			this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
+
+			//Render the model using the LightShader
+			this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture(), this->m_Light->GetDirection(), color);
+
+			//Reset to the original world matrix
+			this->m_Direct3D->GetWorldMatrix(worldMatrix);
+			renderCount++;
+		}
+	}
+
+	//Set the number of models that was actually rendered this frame
+	result = this->m_Text->SetRenderCount(renderCount, this->m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
 	//Turn off the Z-Buffer to begin all 2D rendering
 	this->m_Direct3D->TurnZBufferOff();
 
@@ -160,42 +299,5 @@ bool Graphics::Render()
 	//Present the rendered scene to the screen
 	this->m_Direct3D->EndScene();
 
-	return true;
-}
-
-bool Text::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
-{
-	bool result;
-
-	char tempString[16];
-	char mouseString[16];
-
-	//Convert the mouseX integer to string format
-	_itoa_s(mouseX, tempString, 10);
-
-	//Setup the mouseX string
-	strcpy_s(mouseString, "Mouse X: ");
-	strcat_s(mouseString, tempString); 
-
-	//Update the sentence vertex buffer with the new string information
-	result = Text::UpdateSentence(m_sentence1, mouseString, D3DXVECTOR2(20.0f, 20.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), deviceContext);
-	if (!result)
-	{
-		return false;
-	}
-
-	//Convert the mouseY integer to string format
-	_itoa_s(mouseY, tempString, 10);
-
-	//Setup the mouseY string
-	strcpy_s(mouseString, "Mouse Y: ");
-	strcat_s(mouseString, tempString);
-
-	//Update the sentence vertex buffer with the new string information
-	result = Text::UpdateSentence(m_sentence2, mouseString, D3DXVECTOR2(20.0f, 40.0f), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), deviceContext);
-	if (!result)
-	{
-		return false;
-	}
 	return true;
 }

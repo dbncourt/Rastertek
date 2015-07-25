@@ -8,9 +8,8 @@ System::System()
 {
 	this->m_Input = nullptr;
 	this->m_Graphics = nullptr;
-	this->m_Fps = nullptr;
-	this->m_Cpu = nullptr;
 	this->m_Timer = nullptr;
+	this->m_Position = nullptr;
 }
 
 System::System(const System& other)
@@ -63,25 +62,6 @@ bool System::Initialize()
 	{
 		return false;
 	}
-	//Create the Fps object
-	this->m_Fps = new Fps();
-	if (!this->m_Fps)
-	{
-		return false;
-	}
-
-	//Initialize the Fps object
-	this->m_Fps->Initialize();
-
-	//Create the Cpu object
-	this->m_Cpu = new Cpu();
-	if (!this->m_Cpu)
-	{
-		return false;
-	}
-
-	//Initialize the Cpu object
-	this->m_Cpu->Initialize();
 
 	//Create the Timer object
 	this->m_Timer = new Timer();
@@ -97,31 +77,30 @@ bool System::Initialize()
 		MessageBox(this->m_hwnd, L"Could not initialize the Timer object", L"Error", MB_OK);
 		return false;
 	}
+
+	//Create the Position object
+	this->m_Position = new Position();
+	if (!this->m_Position)
+	{
+		return false;
+	}
 	return true;
 }
 
 void System::Shutdown()
 {
+	//Release the Position object
+	if (this->m_Position)
+	{
+		delete this->m_Position;
+		this->m_Position = nullptr;
+	}
+
 	//Release the Timer object
 	if (this->m_Timer)
 	{
 		delete this->m_Timer;
 		this->m_Timer = nullptr;
-	}
-
-	//Release the Cpu object
-	if (this->m_Cpu)
-	{
-		this->m_Cpu->Shutdown();
-		delete this->m_Cpu;
-		this->m_Cpu = nullptr;
-	}
-
-	//Release the Fps object
-	if (this->m_Fps)
-	{
-		delete this->m_Fps;
-		this->m_Fps = nullptr;
 	}
 
 	//Release the Graphics object
@@ -192,11 +171,9 @@ void System::Run()
 bool System::Frame()
 {
 	bool result;
-	
+		
 	//Update the system stats
 	this->m_Timer->Frame();
-	this->m_Fps->Frame();
-	this->m_Cpu->Frame();
 
 	//Do the input frame processing
 	result = this->m_Input->Frame();
@@ -205,8 +182,23 @@ bool System::Frame()
 		return false;
 	}
 	
+	//Set the frame time for calculating the updated position
+	this->m_Position->SetFrameTime(this->m_Timer->GetTime());
+
+	bool keyDown;
+	//Check if the left or right arrow key has been pressed, if so rotate the camera accordingly
+	keyDown = this->m_Input->IsLeftArrowPressed();
+	this->m_Position->TurnLeft(keyDown);
+
+	keyDown = this->m_Input->IsRightArrowPressed();
+	this->m_Position->TurnRight(keyDown);
+
+	//Get the current view point rotation
+	float yRotation;
+	this->m_Position->GetRotation(yRotation);
+
 	//Do the frame processing for the Graphics object
-	result = this->m_Graphics->Frame(this->m_Fps->GetFps(), this->m_Cpu->GetCpuPercentage(), this->m_Timer->GetTime());
+	result = this->m_Graphics->Frame(yRotation);
 	if (!result)
 	{
 		return false;

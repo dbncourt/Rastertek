@@ -10,6 +10,11 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Text.h"
+#include "Model.h"
+#include "LightShader.h"
+#include "Light.h"
+#include "ModelList.h"
+#include "Frustum.h"
 
 
 /////////////
@@ -31,6 +36,11 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Text* m_Text;
+	Model* m_Model;
+	LightShader* m_LightShader;
+	Light* m_Light;
+	ModelList* m_ModelList;
+	Frustum* m_Frustum;
 
 public:
 	Graphics();
@@ -40,7 +50,7 @@ public:
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
 	
-	bool Frame(int fps, int cpu, float frameTime);
+	bool Frame(float rotationY);
 	bool Render();
 };
 #endif

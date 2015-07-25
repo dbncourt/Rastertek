@@ -231,3 +231,23 @@ void Input::GetMouseLocation(int& mouseX, int& mouseY)
 	mouseX = this->m_mouseX;
 	mouseY = this->m_mouseY;
 }
+
+bool Input::IsLeftArrowPressed()
+{
+	//Do a bitwise AND on the keyboard state to check if the left arrow key is currently being pressed
+	if (this->m_keyboardState[DIK_LEFTARROW] & 0x80)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Input::IsRightArrowPressed()
+{
+	//Do a bitwise AND on the keyboard state to check if the right arrow key is currently being pressed
+	if (this->m_keyboardState[DIK_RIGHTARROW] & 0x80)
+	{
+		return true;
+	}
+	return false;
+}
