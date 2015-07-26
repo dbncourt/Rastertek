@@ -9,9 +9,8 @@
 ///////////////////////
 #include "Direct3D.h"
 #include "Camera.h"
-#include "Text.h"
 #include "Model.h"
-#include "MultiTextureShader.h"
+#include "LightMapShader.h"
 
 
 /////////////
@@ -33,7 +32,7 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Model* m_Model;
-	MultiTextureShader* m_MultiTextureShader;
+	LightMapShader* m_LightMapShader;
 
 public:
 	Graphics();

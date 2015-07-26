@@ -90,6 +90,9 @@
     <ClCompile Include="TextureArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LightMapShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -164,6 +167,9 @@
     <ClInclude Include="TextureArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LightMapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
@@ -179,6 +185,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="stone01.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="light01.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="light02.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -211,6 +223,12 @@
       <Filter>Resource Files</Filter>
     </FxCompile>
     <FxCompile Include="MultiTexturePixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="LightMapPixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

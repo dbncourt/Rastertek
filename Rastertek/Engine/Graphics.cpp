@@ -9,7 +9,7 @@ Graphics::Graphics()
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Model = nullptr;
-	this->m_MultiTextureShader = nullptr;
+	this->m_LightMapShader = nullptr;
 
 }
 
@@ -60,25 +60,25 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the Model object
-	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "square.txt", L"stone01.dds", L"dirt01.dds");
+	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "square.txt", L"stone01.dds", L"light01.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Model object", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the MultiTextureShader object
-	this->m_MultiTextureShader = new MultiTextureShader();
-	if (!this->m_MultiTextureShader)
+	//Create the LightMapShader object
+	this->m_LightMapShader = new LightMapShader();
+	if (!this->m_LightMapShader)
 	{
 		return false;
 	}
 
-	//Initialize the MultiTextureShader object
-	result = this->m_MultiTextureShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	//Initialize the LightMapShader object
+	result = this->m_LightMapShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the MultiTextureShader object", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the LightMapShader object", L"Error", MB_OK);
 		return false;
 	}
 	return true;
@@ -86,12 +86,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void Graphics::Shutdown()
 {
-	//Release the MultiTextureShader object
-	if (this->m_MultiTextureShader)
+	//Release the LightMapShader object
+	if (this->m_LightMapShader)
 	{
-		this->m_MultiTextureShader->Shutdown();
-		delete this->m_MultiTextureShader;
-		this->m_MultiTextureShader = nullptr;
+		this->m_LightMapShader->Shutdown();
+		delete this->m_LightMapShader;
+		this->m_LightMapShader = nullptr;
 	}
 
 	//Release the model object
@@ -149,7 +149,7 @@ bool Graphics::Render()
 	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
 
 	//Render the model using the MultiTextureShader
-	this->m_MultiTextureShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray());
+	this->m_LightMapShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray());
 
 	//Present the rendered scene to the screen
 	this->m_Direct3D->EndScene();

@@ -56,14 +56,14 @@ bool MultiTextureShader::Render(ID3D11DeviceContext* deviceContext, int indexCou
 
 	//Now render the prepared buffers with the shader
 	MultiTextureShader::RenderShader(deviceContext, indexCount);
-	
+
 	return true;
 }
 
 bool MultiTextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFilename)
 {
 	HRESULT result;
-	
+
 	ID3D10Blob* errorMessage = nullptr;
 	ID3D10Blob* vertexShaderBuffer = nullptr;
 	ID3D10Blob* pixelShaderBuffer = nullptr;
@@ -288,7 +288,7 @@ bool MultiTextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	//Set shader texture array resource in the pixel shader
 	deviceContext->PSSetShaderResources(0, 2, textureArray);
-	
+
 	return true;
 }
 
