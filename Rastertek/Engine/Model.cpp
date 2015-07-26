@@ -20,7 +20,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename)
+bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName)
 {
 	bool result;
 
@@ -39,7 +39,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTex
 	}
 
 	// Load the texture for this model.
-	result = Model::LoadTexture(device, baseTextureFilename, colorTextureFilename);
+	result = Model::LoadTexture(device, baseTextureFilename, colorTextureFilename, alphaTextureFileName);
 	if(!result)
 	{
 		return false;
@@ -195,7 +195,7 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename)
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName)
 {
 	bool result;
 
@@ -207,7 +207,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR*
 	}
 
 	//Initialize the texture object
-	result = this->m_TextureArray->Initialize(device, baseTextureFilename, colorTextureFilename);
+	result = this->m_TextureArray->Initialize(device, baseTextureFilename, colorTextureFilename, alphaTextureFileName);
 	if (!result)
 	{
 		return false;

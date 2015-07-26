@@ -18,14 +18,14 @@
 class TextureArray
 {
 private:
-	ID3D11ShaderResourceView* m_textures[2];
+	ID3D11ShaderResourceView* m_textures[3];
 
 public:
 	TextureArray();
 	TextureArray(const TextureArray& other);
 	~TextureArray();
 
-	bool Initialize(ID3D11Device* device, WCHAR* baseTextureFileName, WCHAR* colorTextureFileName);
+	bool Initialize(ID3D11Device* device, WCHAR* baseTextureFileName, WCHAR* colorTextureFileName, WCHAR* alphaTextureFileName);
 	void Shutdown();
 
 	ID3D11ShaderResourceView** GetTextureArray();

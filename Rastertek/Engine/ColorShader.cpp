@@ -194,23 +194,20 @@ void ColorShader::ShutdownShader()
 
 void ColorShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
-
 	char* compileErrors;
-	unsigned long bufferSize;
-	unsigned long i;
 	ofstream fout;
 
 	//Get a pointer to the error message text buffer
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
 
 	//Get the length of the message
-	bufferSize = errorMessage->GetBufferSize();
+	UINT bufferSize = errorMessage->GetBufferSize();
 
 	//Open a file to write the error message in
 	fout.open("shader-error.txt");
 
 	//Write out the error message
-	for (i = 0; i < bufferSize; i++)
+	for (UINT i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}

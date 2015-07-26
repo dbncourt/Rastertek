@@ -93,6 +93,9 @@
     <ClCompile Include="LightMapShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlphaMapShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -170,6 +173,9 @@
     <ClInclude Include="LightMapShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlphaMapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
@@ -229,6 +235,12 @@
       <Filter>Resource Files</Filter>
     </FxCompile>
     <FxCompile Include="LightMapPixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="AlphaMapVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="AlphaMapPixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

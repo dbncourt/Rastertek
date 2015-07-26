@@ -50,7 +50,7 @@ public:
 	Model(const Model&);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename);
+	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
@@ -62,7 +62,7 @@ private :
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename);
+	bool LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName);
 	void ReleaseTexture();
 
 	bool LoadModel(char* modelFilename);

@@ -262,14 +262,13 @@ void FontShader::ShutdownShaders()
 void FontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
 {
 	char* compileError;
-	UINT bufferSize;
 	ofstream fout;
 
 	// Get a pointer to the error message text buffer.
 	compileError = (char*)errorMessage->GetBufferPointer();
 
 	// Get the length of the message.
-	bufferSize = errorMessage->GetBufferSize();
+	UINT bufferSize = errorMessage->GetBufferSize();
 
 	// Open a file to write the error message to.
 	fout.open("Shader-Error.txt");
