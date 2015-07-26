@@ -84,6 +84,12 @@
     <ClCompile Include="Position.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MultiTextureShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -152,9 +158,27 @@
     <ClInclude Include="Position.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MultiTextureShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="font.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Red.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="dirt01.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="stone01.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -183,9 +207,27 @@
     <FxCompile Include="FontPixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="MultiTextureVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="MultiTexturePixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="fontdata.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="model.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="sphere.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="square.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -11,10 +11,7 @@
 #include "Camera.h"
 #include "Text.h"
 #include "Model.h"
-#include "LightShader.h"
-#include "Light.h"
-#include "ModelList.h"
-#include "Frustum.h"
+#include "MultiTextureShader.h"
 
 
 /////////////
@@ -35,12 +32,8 @@ class Graphics
 private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
-	Text* m_Text;
 	Model* m_Model;
-	LightShader* m_LightShader;
-	Light* m_Light;
-	ModelList* m_ModelList;
-	Frustum* m_Frustum;
+	MultiTextureShader* m_MultiTextureShader;
 
 public:
 	Graphics();
@@ -50,7 +43,7 @@ public:
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
 	
-	bool Frame(float rotationY);
+	bool Frame();
 	bool Render();
 };
 #endif

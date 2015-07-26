@@ -15,7 +15,7 @@ using namespace std;
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "Texture.h"
+#include "TextureArray.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: Model
@@ -28,7 +28,6 @@ private:
 	{
 		D3DXVECTOR3 position;
 		D3DXVECTOR2 texture;
-		D3DXVECTOR3 normal;
 	};
 
 	struct ModelType
@@ -39,7 +38,7 @@ private:
 	};
 
 	ModelType* m_model;
-	Texture* m_Texture;
+	TextureArray* m_TextureArray;
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;
 	UINT m_vertexCount;
@@ -51,19 +50,19 @@ public:
 	Model(const Model&);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename);
+	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView** GetTextureArray();
 
 private :
 	bool InitializeBuffers(ID3D11Device* device);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* filename);
+	bool LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename);
 	void ReleaseTexture();
 
 	bool LoadModel(char* modelFilename);

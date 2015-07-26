@@ -8,8 +8,8 @@ Model::Model()
 {
 	this->m_vertexBuffer = nullptr;
 	this->m_indexBuffer = nullptr;
-	this->m_Texture = nullptr;
 	this->m_model = nullptr;
+	this->m_TextureArray = nullptr;
 }
 
 Model::Model(const Model& other)
@@ -20,7 +20,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
+bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename)
 {
 	bool result;
 
@@ -39,7 +39,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texture
 	}
 
 	// Load the texture for this model.
-	result = Model::LoadTexture(device, textureFilename);
+	result = Model::LoadTexture(device, baseTextureFilename, colorTextureFilename);
 	if(!result)
 	{
 		return false;
@@ -71,9 +71,9 @@ int Model::GetIndexCount()
 	return this->m_indexCount;
 }
 
-ID3D11ShaderResourceView* Model::GetTexture()
+ID3D11ShaderResourceView** Model::GetTextureArray()
 {
-	return this->m_Texture->GetTexture();
+	return this->m_TextureArray->GetTextureArray();
 }
 
 bool Model::InitializeBuffers(ID3D11Device* device)
@@ -105,7 +105,6 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	{
 		vertices[i].position = this->m_model[i].position;
 		vertices[i].texture = this->m_model[i].texture;
-		vertices[i].normal = this->m_model[i].normal;
 
 		indices[i] = i;
 	}
@@ -196,19 +195,19 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename)
 {
 	bool result;
 
 	//Create the texture object
-	this->m_Texture = new Texture;
-	if (!this->m_Texture)
+	this->m_TextureArray = new TextureArray();
+	if (!this->m_TextureArray)
 	{
 		return false;
 	}
 
 	//Initialize the texture object
-	result = this->m_Texture->Initialize(device, filename);
+	result = this->m_TextureArray->Initialize(device, baseTextureFilename, colorTextureFilename);
 	if (!result)
 	{
 		return false;
@@ -220,11 +219,11 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
 void Model::ReleaseTexture()
 {
 	//Release the texture object
-	if (!this->m_Texture)
+	if (!this->m_TextureArray)
 	{
-		this->m_Texture->Shutdown();
-		delete this->m_Texture;
-		this->m_Texture = nullptr;
+		this->m_TextureArray->Shutdown();
+		delete this->m_TextureArray;
+		this->m_TextureArray = nullptr;
 	}
 }
 

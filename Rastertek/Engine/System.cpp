@@ -198,7 +198,7 @@ bool System::Frame()
 	this->m_Position->GetRotation(yRotation);
 
 	//Do the frame processing for the Graphics object
-	result = this->m_Graphics->Frame(yRotation);
+	result = this->m_Graphics->Frame();
 	if (!result)
 	{
 		return false;

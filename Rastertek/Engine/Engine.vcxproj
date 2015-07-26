@@ -163,11 +163,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelList.cpp" />
+    <ClCompile Include="MultiTextureShader.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureArray.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -187,16 +189,22 @@
     <ClInclude Include="LightShader.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelList.h" />
+    <ClInclude Include="MultiTextureShader.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureArray.h" />
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="dirt01.dds" />
+    <Image Include="font.dds" />
+    <Image Include="Red.dds" />
     <Image Include="seafloor.dds" />
+    <Image Include="stone01.dds" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ColorVertexShader.hlsl">
@@ -235,6 +243,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="MultiTexturePixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="MultiTextureVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="TexturePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -250,6 +270,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Cube.txt" />
+    <Text Include="fontdata.txt" />
+    <Text Include="model.txt" />
+    <Text Include="sphere.txt" />
+    <Text Include="square.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
