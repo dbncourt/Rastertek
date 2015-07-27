@@ -60,7 +60,7 @@ bool MultiTextureShader::Render(ID3D11DeviceContext* deviceContext, int indexCou
 	return true;
 }
 
-bool MultiTextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFilename)
+bool MultiTextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFileName)
 {
 	HRESULT result;
 
@@ -85,16 +85,16 @@ bool MultiTextureShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR
 	}
 
 	//Compile the pixel shader code
-	result = D3DX11CompileFromFile(psFilename, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
+	result = D3DX11CompileFromFile(psFileName, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
 	if (FAILED(result))
 	{
 		if (errorMessage)
 		{
-			MultiTextureShader::OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
+			MultiTextureShader::OutputShaderErrorMessage(errorMessage, hwnd, psFileName);
 		}
 		else
 		{
-			MessageBox(hwnd, psFilename, L"Missing Shader File", MB_OK);
+			MessageBox(hwnd, psFileName, L"Missing Shader File", MB_OK);
 		}
 		return false;
 	}
@@ -233,7 +233,7 @@ void MultiTextureShader::ShutdownShader()
 	}
 }
 
-void MultiTextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void MultiTextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFileName)
 {
 	char* compileErrors;
 	ofstream fout;
@@ -242,13 +242,13 @@ void MultiTextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
 
 	//Get the length of the message
-	UINT bufferSize = errorMessage->GetBufferSize();
+	ULONG bufferSize = errorMessage->GetBufferSize();
 
 	//Open a file to write the error message in
 	fout.open("shader-error.txt");
 
 	//Write out the error message
-	for (UINT i = 0; i < bufferSize; i++)
+	for (ULONG i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
@@ -261,7 +261,7 @@ void MultiTextureShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 	errorMessage = nullptr;
 
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
+	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFileName, MB_OK);
 }
 
 bool MultiTextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView** textureArray)

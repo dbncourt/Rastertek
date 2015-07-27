@@ -9,7 +9,8 @@ Graphics::Graphics()
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Model = nullptr;
-	this->m_AlphaMapShader = nullptr;
+	this->m_BumpMapShader = nullptr;
+	this->m_Light = nullptr;
 
 }
 
@@ -60,38 +61,57 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the Model object
-	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "square.txt", L"stone01.dds", L"dirt01.dds", L"alpha01.dds");
+	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "cube.txt", L"stone01.dds", L"bump01.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Model object", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the AlphaMapShader object
-	this->m_AlphaMapShader = new AlphaMapShader();
-	if (!this->m_AlphaMapShader)
+	//Create the BumpMapShader object
+	this->m_BumpMapShader = new BumpMapShader();
+	if (!this->m_BumpMapShader)
 	{
 		return false;
 	}
 
-	//Initialize the AlphaMapShader object
-	result = this->m_AlphaMapShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	//Initialize the BumpMapShader object
+	result = this->m_BumpMapShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the AlphaMapShader object", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the BumpMapShader object", L"Error", MB_OK);
 		return false;
 	}
+
+	//Create the Light object
+	this->m_Light = new Light();
+	if (!this->m_Light)
+	{
+		return false;
+	}
+
+	//Initialize the Light Object
+	this->m_Light->SetDiffuseColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	this->m_Light->SetDirection(D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+
 	return true;
 }
 
 void Graphics::Shutdown()
 {
-	//Release the AlphaMapShader object
-	if (this->m_AlphaMapShader)
+	//Release the Light object
+	if (this->m_Light)
 	{
-		this->m_AlphaMapShader->Shutdown();
-		delete this->m_AlphaMapShader;
-		this->m_AlphaMapShader = nullptr;
+		delete this->m_Light;
+		this->m_Light = nullptr;
+	}
+
+	//Release the BumpMapShader object
+	if (this->m_BumpMapShader)
+	{
+		this->m_BumpMapShader->Shutdown();
+		delete this->m_BumpMapShader;
+		this->m_BumpMapShader = nullptr;
 	}
 
 	//Release the model object
@@ -128,6 +148,8 @@ bool Graphics::Frame()
 
 bool Graphics::Render()
 {
+	static float rotation = 0.0f;
+
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX worldMatrix;
@@ -145,11 +167,21 @@ bool Graphics::Render()
 	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
 	this->m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
+	//Update the rotation variable each frame
+	rotation += (float)D3DX_PI * 0.0025f;
+	if (rotation > 360.0f)
+	{
+		rotation -= 360.0f;
+	}
+
+	//Rotate the world matrix by the rotation value
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+
 	//Put the model vertex and index buffers on the graphics pipeline them for drawing
 	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
 
 	//Render the model using the MultiTextureShader
-	this->m_AlphaMapShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray());
+ 	this->m_BumpMapShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray(), this->m_Light->GetDirection(), this->m_Light->GetDiffuseColor());
 
 	//Present the rendered scene to the screen
 	this->m_Direct3D->EndScene();

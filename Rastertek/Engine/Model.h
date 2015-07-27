@@ -28,9 +28,21 @@ private:
 	{
 		D3DXVECTOR3 position;
 		D3DXVECTOR2 texture;
+		D3DXVECTOR3 normal;
+		D3DXVECTOR3 tanget;
+		D3DXVECTOR3 binormal;
 	};
 
 	struct ModelType
+	{
+		D3DXVECTOR3 position;
+		D3DXVECTOR2 texture;
+		D3DXVECTOR3 normal;
+		D3DXVECTOR3 tanget;
+		D3DXVECTOR3 binormal;
+	};
+
+	struct TempVertexType
 	{
 		D3DXVECTOR3 position;
 		D3DXVECTOR2 texture;
@@ -50,7 +62,7 @@ public:
 	Model(const Model&);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName);
+	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* bumpMapTextureFilename);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
@@ -62,10 +74,14 @@ private :
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* colorTextureFilename, WCHAR* alphaTextureFileName);
+	bool LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* bumpMapTextureFilename);
 	void ReleaseTexture();
 
 	bool LoadModel(char* modelFilename);
 	void ReleaseModel();
+
+	void CalculateModelVectors();
+	void CalculateTangetBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, D3DXVECTOR3& tangent, D3DXVECTOR3& binormal);
+	void CalculateNormal(D3DXVECTOR3 tangent, D3DXVECTOR3 binormal, D3DXVECTOR3& normal);
 };
 #endif

@@ -60,7 +60,7 @@ bool FontShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DX
 	return true;
 }
 
-bool FontShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool FontShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFileName)
 {
 	HRESULT result;
 
@@ -70,31 +70,31 @@ bool FontShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFile
 	ID3D10Blob* pixelShaderBuffer = nullptr;
 
 	//Compile the vertex shader code
-	result = D3DX11CompileFromFile(vsFilename, nullptr, nullptr, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &vertexShaderBuffer, &errorMessage, nullptr);
+	result = D3DX11CompileFromFile(vsFileName, nullptr, nullptr, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &vertexShaderBuffer, &errorMessage, nullptr);
 	if (FAILED(result))
 	{
 		if (errorMessage)
 		{
-			FontShader::OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
+			FontShader::OutputShaderErrorMessage(errorMessage, hwnd, vsFileName);
 		}
 		else
 		{
-			MessageBox(hwnd, vsFilename, L"Missing Shader File", MB_OK);
+			MessageBox(hwnd, vsFileName, L"Missing Shader File", MB_OK);
 		}
 		return false;
 	}
 
 	//Compile the pixel shader code
-	result = D3DX11CompileFromFile(psFilename, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
+	result = D3DX11CompileFromFile(psFileName, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
 	if (FAILED(result))
 	{
 		if (errorMessage)
 		{
-			FontShader::OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
+			FontShader::OutputShaderErrorMessage(errorMessage, hwnd, psFileName);
 		}
 		else
 		{
-			MessageBox(hwnd, psFilename, L"Missing Shader File", MB_OK);
+			MessageBox(hwnd, psFileName, L"Missing Shader File", MB_OK);
 		}
 		return false;
 	}
@@ -259,7 +259,7 @@ void FontShader::ShutdownShaders()
 	}
 }
 
-void FontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void FontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFileName)
 {
 	char* compileError;
 	ofstream fout;
@@ -268,13 +268,13 @@ void FontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, W
 	compileError = (char*)errorMessage->GetBufferPointer();
 
 	// Get the length of the message.
-	UINT bufferSize = errorMessage->GetBufferSize();
+	ULONG bufferSize = errorMessage->GetBufferSize();
 
 	// Open a file to write the error message to.
 	fout.open("Shader-Error.txt");
 
 	// Write out the error message.
-	for (UINT i = 0; i < bufferSize; i++)
+	for (ULONG i = 0; i < bufferSize; i++)
 	{
 		fout << compileError[i];
 	}
@@ -287,7 +287,7 @@ void FontShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, W
 	errorMessage = nullptr;
 
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check Shader-Error.txt for message.", shaderFilename, MB_OK);
+	MessageBox(hwnd, L"Error compiling shader.  Check Shader-Error.txt for message.", shaderFileName, MB_OK);
 }
 
 bool FontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXCOLOR fontColor)

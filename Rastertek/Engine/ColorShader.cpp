@@ -45,7 +45,7 @@ bool ColorShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3D
 	return true;
 }
 
-bool ColorShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool ColorShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFileName, WCHAR* psFileName)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -61,35 +61,35 @@ bool ColorShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFil
 	pixelShaderBuffer = nullptr;
 
 	//Compile the vertex shader code.
-	result = D3DX11CompileFromFile(vsFilename, nullptr, nullptr, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &vertexShaderBuffer, &errorMessage, nullptr);
+	result = D3DX11CompileFromFile(vsFileName, nullptr, nullptr, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &vertexShaderBuffer, &errorMessage, nullptr);
 	if (FAILED(result))
 	{
 		//If the shader failed to compile, it should have written something to the error message
 		if (errorMessage)
 		{
-			ColorShader::OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
+			ColorShader::OutputShaderErrorMessage(errorMessage, hwnd, vsFileName);
 		}
 		//If there was nothing in the error message then it simply could not find the shader file itself
 		else
 		{
-			MessageBox(hwnd, vsFilename, L"Missing Shader File", MB_OK);
+			MessageBox(hwnd, vsFileName, L"Missing Shader File", MB_OK);
 		}
 		return false;
 	}
 
 	//Compile the pixel shader code
-	result = D3DX11CompileFromFile(psFilename, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
+	result = D3DX11CompileFromFile(psFileName, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, nullptr, &pixelShaderBuffer, &errorMessage, nullptr);
 	if (FAILED(result))
 	{
 		//If the shader failed to compile it should have written something to the error message
 		if (errorMessage)
 		{
-			ColorShader::OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
+			ColorShader::OutputShaderErrorMessage(errorMessage, hwnd, psFileName);
 		}
 		//If there was nothing in the error message then it simply could not find the file itself
 		else
 		{
-			MessageBox(hwnd, psFilename, L"Missing Shader File", MB_OK);
+			MessageBox(hwnd, psFileName, L"Missing Shader File", MB_OK);
 		}
 		return false;
 	}
@@ -192,35 +192,35 @@ void ColorShader::ShutdownShader()
 	}
 }
 
-void ColorShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename)
+void ColorShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFileName)
 {
 	char* compileErrors;
-	ofstream fout;
+	ofstream fOut;
 
 	//Get a pointer to the error message text buffer
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
 
 	//Get the length of the message
-	UINT bufferSize = errorMessage->GetBufferSize();
+	ULONG bufferSize = errorMessage->GetBufferSize();
 
 	//Open a file to write the error message in
-	fout.open("shader-error.txt");
+	fOut.open("shader-error.txt");
 
 	//Write out the error message
-	for (UINT i = 0; i < bufferSize; i++)
+	for (ULONG i = 0; i < bufferSize; i++)
 	{
-		fout << compileErrors[i];
+		fOut << compileErrors[i];
 	}
 
 	//Close the file
-	fout.close();
+	fOut.close();
 
 	//Release the errorMessage
 	errorMessage->Release();
 	errorMessage = nullptr;
 
 	// Pop a message up on the screen to notify the user to check the text file for compile errors.
-	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
+	MessageBox(hwnd, L"Error compiling shader.  Check shader-error.txt for message.", shaderFileName, MB_OK);
 }
 
 bool ColorShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix)

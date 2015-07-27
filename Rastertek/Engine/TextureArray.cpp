@@ -19,7 +19,7 @@ TextureArray::~TextureArray()
 {
 }
 
-bool TextureArray::Initialize(ID3D11Device* device, WCHAR* baseTextureFileName, WCHAR* colorTextureFileName, WCHAR* alphaTextureFileName)
+bool TextureArray::Initialize(ID3D11Device* device, WCHAR* baseTextureFileName, WCHAR* bumpMapTextureFilename)
 {
 	HRESULT result;
 
@@ -31,14 +31,7 @@ bool TextureArray::Initialize(ID3D11Device* device, WCHAR* baseTextureFileName, 
 	}
 
 	//Load the second texture in
-	result = D3DX11CreateShaderResourceViewFromFile(device, colorTextureFileName, nullptr, nullptr, &this->m_textures[1], nullptr);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	//Load the third texture in
-	result = D3DX11CreateShaderResourceViewFromFile(device, alphaTextureFileName, nullptr, nullptr, &this->m_textures[2], nullptr);
+	result = D3DX11CreateShaderResourceViewFromFile(device, bumpMapTextureFilename, nullptr, nullptr, &this->m_textures[1], nullptr);
 	if (FAILED(result))
 	{
 		return false;

@@ -96,6 +96,9 @@
     <ClCompile Include="AlphaMapShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BumpMapShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -176,6 +179,9 @@
     <ClInclude Include="AlphaMapShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BumpMapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
@@ -243,11 +249,14 @@
     <FxCompile Include="AlphaMapPixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="BumpMapVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="BumpMapPixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Cube.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="fontdata.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -258,6 +267,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="square.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="cube.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
