@@ -153,6 +153,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorShader.cpp" />
     <ClCompile Include="Cpu.cpp" />
+    <ClCompile Include="DebugWindow.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontShader.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="ModelList.cpp" />
     <ClCompile Include="MultiTextureShader.cpp" />
     <ClCompile Include="Position.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SpecMapShader.cpp" />
     <ClCompile Include="System.cpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorShader.h" />
     <ClInclude Include="Cpu.h" />
+    <ClInclude Include="DebugWindow.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontShader.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="ModelList.h" />
     <ClInclude Include="MultiTextureShader.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SpecMapShader.h" />
     <ClInclude Include="System.h" />

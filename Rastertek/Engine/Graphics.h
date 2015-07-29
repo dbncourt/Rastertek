@@ -10,8 +10,11 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "SpecMapShader.h"
+#include "LightShader.h"
 #include "Light.h"
+#include "RenderTexture.h"
+#include "DebugWindow.h"
+#include "TextureShader.h"
 
 
 /////////////
@@ -33,8 +36,11 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Model* m_Model;
-	SpecMapShader* m_SpecMapShader;
+	LightShader* m_LightShader;
 	Light* m_Light;
+	RenderTexture* m_RenderTexture;
+	DebugWindow* m_DebugWindow;
+	TextureShader* m_TextureShader;
 
 public:
 	Graphics();
@@ -46,5 +52,9 @@ public:
 	
 	bool Frame();
 	bool Render();
+
+private:
+	bool RenderToTexture();
+	bool RenderScene();
 };
 #endif
