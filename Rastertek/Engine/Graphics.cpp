@@ -9,7 +9,7 @@ Graphics::Graphics()
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Model = nullptr;
-	this->m_BumpMapShader = nullptr;
+	this->m_SpecMapShader = nullptr;
 	this->m_Light = nullptr;
 
 }
@@ -49,7 +49,7 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 	//Set the initial position of the camera
-	this->m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -10.0f));
+	this->m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -1.0f));
 	this->m_Camera->Render();
 	this->m_Camera->GetViewMatrix(baseViewMatrix);
 	
@@ -61,25 +61,25 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the Model object
-	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "cube.txt", L"stone01.dds", L"bump01.dds");
+	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "cube.txt", L"stone02.dds", L"bump02.dds", L"spec02.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Model object", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the BumpMapShader object
-	this->m_BumpMapShader = new BumpMapShader();
-	if (!this->m_BumpMapShader)
+	//Create the SpecMapShader object
+	this->m_SpecMapShader = new SpecMapShader();
+	if (!this->m_SpecMapShader)
 	{
 		return false;
 	}
 
-	//Initialize the BumpMapShader object
-	result = this->m_BumpMapShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	//Initialize the SpecMapShader object
+	result = this->m_SpecMapShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the BumpMapShader object", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the SpecMapShader object", L"Error", MB_OK);
 		return false;
 	}
 
@@ -93,6 +93,8 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//Initialize the Light Object
 	this->m_Light->SetDiffuseColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	this->m_Light->SetDirection(D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+	this->m_Light->SetSpecularColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	this->m_Light->SetSpecularPower(16.0f);
 
 	return true;
 }
@@ -106,12 +108,12 @@ void Graphics::Shutdown()
 		this->m_Light = nullptr;
 	}
 
-	//Release the BumpMapShader object
-	if (this->m_BumpMapShader)
+	//Release the SpecMapShader object
+	if (this->m_SpecMapShader)
 	{
-		this->m_BumpMapShader->Shutdown();
-		delete this->m_BumpMapShader;
-		this->m_BumpMapShader = nullptr;
+		this->m_SpecMapShader->Shutdown();
+		delete this->m_SpecMapShader;
+		this->m_SpecMapShader = nullptr;
 	}
 
 	//Release the model object
@@ -181,7 +183,7 @@ bool Graphics::Render()
 	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
 
 	//Render the model using the MultiTextureShader
- 	this->m_BumpMapShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray(), this->m_Light->GetDirection(), this->m_Light->GetDiffuseColor());
+ 	this->m_SpecMapShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTextureArray(), this->m_Light->GetDirection(), this->m_Light->GetDiffuseColor(), this->m_Camera->GetPosition(), this->m_Light->GetSpecularColor(), this->m_Light->GetSpecularPower());
 
 	//Present the rendered scene to the screen
 	this->m_Direct3D->EndScene();

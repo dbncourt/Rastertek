@@ -20,7 +20,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFilename, WCHAR* bumpMapTextureFilename)
+bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTextureFileName, WCHAR* bumpMapTextureFileName, WCHAR* specularMapTextureFileName)
 {
 	bool result;
 
@@ -42,7 +42,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTex
 	}
 
 	// Load the texture for this model.
-	result = Model::LoadTexture(device, baseTextureFilename, bumpMapTextureFilename);
+	result = Model::LoadTextures(device, baseTextureFileName, bumpMapTextureFileName, specularMapTextureFileName);
 	if(!result)
 	{
 		return false;
@@ -54,7 +54,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* baseTex
 void Model::Shutdown()
 {
 	//Release the model texture
-	Model::ReleaseTexture();
+	Model::ReleaseTextures();
 
 	// Shutdown the vertex and index buffers
 	Model::ShutdownBuffers();
@@ -109,7 +109,7 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 		vertices[i].position = this->m_model[i].position;
 		vertices[i].texture = this->m_model[i].texture;
 		vertices[i].normal = this->m_model[i].normal;
-		vertices[i].tanget = this->m_model[i].tanget;
+		vertices[i].tangent = this->m_model[i].tanget;
 		vertices[i].binormal = this->m_model[i].binormal;
 
 		indices[i] = i;
@@ -201,7 +201,7 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR* bumpMapTextureFilename)
+bool Model::LoadTextures(ID3D11Device* device, WCHAR* baseTextureFileName, WCHAR* bumpMapTextureFileName, WCHAR* specularMapTextureFileName)
 {
 	bool result;
 
@@ -213,7 +213,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR*
 	}
 
 	//Initialize the texture object
-	result = this->m_TextureArray->Initialize(device, baseTextureFilename, bumpMapTextureFilename);
+	result = this->m_TextureArray->Initialize(device, baseTextureFileName, bumpMapTextureFileName, specularMapTextureFileName);
 	if (!result)
 	{
 		return false;
@@ -222,7 +222,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* baseTextureFilename, WCHAR*
 	return true;
 }
 
-void Model::ReleaseTexture()
+void Model::ReleaseTextures()
 {
 	//Release the texture object
 	if (!this->m_TextureArray)
@@ -331,7 +331,7 @@ void Model::CalculateModelVectors()
 		index++;
 
 		//Calculate the tangent and binormal of that face
-		Model::CalculateTangetBinormal(vertex1, vertex2, vertex3, tangent, binormal);
+		Model::CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
 
 		//Calculate the new normal using the tangent and binormal
 		Model::CalculateNormal(tangent, binormal, normal);
@@ -352,7 +352,7 @@ void Model::CalculateModelVectors()
 
 }
 
-void Model::CalculateTangetBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, D3DXVECTOR3& tangent, D3DXVECTOR3& binormal)
+void Model::CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, D3DXVECTOR3& tangent, D3DXVECTOR3& binormal)
 {
 
 	D3DXVECTOR3 vector1;
@@ -367,8 +367,11 @@ void Model::CalculateTangetBinormal(TempVertexType vertex1, TempVertexType verte
 	vector2 = vertex3.position - vertex1.position;
 
 	//Calculate the tu and tv texture space vector
-	tuVector = vertex2.texture - vertex1.texture;
-	tvVector = vertex3.texture - vertex1.texture;
+	tuVector.x = vertex2.texture.x - vertex1.texture.x;
+	tvVector.x = vertex2.texture.y - vertex1.texture.y;
+
+	tuVector.y = vertex3.texture.x - vertex1.texture.x;
+	tvVector.y = vertex3.texture.y - vertex1.texture.y;
 
 	//Calculate the denominator of the tangent/binormal equation
 	denominator = 1.0f / ((tuVector.x * tvVector.y) - (tuVector.y * tvVector.x));

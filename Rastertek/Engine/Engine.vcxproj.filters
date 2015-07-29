@@ -99,6 +99,9 @@
     <ClCompile Include="BumpMapShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpecMapShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -182,6 +185,9 @@
     <ClInclude Include="BumpMapShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpecMapShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="seafloor.dds">
@@ -203,6 +209,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="light02.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bump01.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bump02.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="spec02.dds">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="stone02.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -255,6 +273,12 @@
     <FxCompile Include="BumpMapPixelShader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="SpecMapVertexShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="SpecMapPixelShader.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fontdata.txt">
@@ -270,6 +294,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="cube.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="shader-error.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -10,7 +10,7 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "BumpMapShader.h"
+#include "SpecMapShader.h"
 #include "Light.h"
 
 
@@ -33,7 +33,7 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Model* m_Model;
-	BumpMapShader* m_BumpMapShader;
+	SpecMapShader* m_SpecMapShader;
 	Light* m_Light;
 
 public:
