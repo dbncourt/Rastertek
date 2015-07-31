@@ -9,7 +9,7 @@ Graphics::Graphics()
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
 	this->m_Model = nullptr;
-	this->m_FogShader = nullptr;
+	this->m_ClipPlaneShader = nullptr;
 
 }
 
@@ -56,25 +56,25 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the Model object
-	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "cube.txt", L"seafloor.dds");
+	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "triangle.txt", L"seafloor.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Model object.", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the FogShader object
-	this->m_FogShader = new FogShader();
-	if (!this->m_FogShader)
+	//Create the ClipPlaneShader object
+	this->m_ClipPlaneShader = new ClipPlaneShader();
+	if (!this->m_ClipPlaneShader)
 	{
 		return false;
 	}
 
-	//Initialize the FogShader object
-	result = this->m_FogShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	//Initialize the ClipPlaneShader object
+	result = this->m_ClipPlaneShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the FogShader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the ClipPlaneShader object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -83,12 +83,12 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void Graphics::Shutdown()
 {
-	//Release the FogShader object
-	if (this->m_FogShader)
+	//Release the ClipPlaneShader object
+	if (this->m_ClipPlaneShader)
 	{
-		this->m_FogShader->Shutdown();
-		delete this->m_FogShader;
-		this->m_FogShader = nullptr;
+		this->m_ClipPlaneShader->Shutdown();
+		delete this->m_ClipPlaneShader;
+		this->m_ClipPlaneShader = nullptr;
 	}
 
 	//Release the model object
@@ -132,17 +132,11 @@ bool Graphics::Render()
 	D3DXMATRIX worldMatrix;
 	D3DXMATRIX orthoMatrix;
 
-	static float rotation = 0.0f;
-
-	// Set the color of the fog to Grey.
-	float fogColor = 0.5f;
-
-	// Set the start and end of the fog.
-	float fogStart = 0.0f;
-	float fogEnd = 10.0f;
+	//Setup a clipping plane
+	D3DXVECTOR4 clipPlane = D3DXVECTOR4(0.0f, -1.0f, 0.0f, 0.0f);
 
 	//Clear the buffers to begin the scene
-	this->m_Direct3D->BeginScene(fogColor, fogColor, fogColor, 1.0f);
+	this->m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	// Generate the view matrix based on the camera's position.
 	this->m_Camera->Render();
@@ -151,23 +145,12 @@ bool Graphics::Render()
 	this->m_Direct3D->GetWorldMatrix(worldMatrix);
 	this->m_Camera->GetViewMatrix(viewMatrix);
 	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
-	this->m_Direct3D->GetOrthoMatrix(orthoMatrix);
-
-	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.005f;
-	if (rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
-
-	// Multiply the world matrix by the rotation.
-	D3DXMatrixRotationY(&worldMatrix, rotation);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
 
-	// Render the model with the fog shader.
-	result = this->m_FogShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture(), fogStart, fogEnd);
+	// Render the model with the clip plane shader.
+	result = this->m_ClipPlaneShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture(), clipPlane);
 	if (!result)
 	{
 		return false;
@@ -177,4 +160,4 @@ bool Graphics::Render()
 	this->m_Direct3D->EndScene();
 
 	return true;
-}
+ }

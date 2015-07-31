@@ -10,7 +10,7 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "FogShader.h"
+#include "ClipPlaneShader.h"
 
 
 /////////////
@@ -32,7 +32,7 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Model* m_Model;
-	FogShader* m_FogShader;
+	ClipPlaneShader* m_ClipPlaneShader;
 
 public:
 	Graphics();
