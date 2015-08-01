@@ -132,6 +132,9 @@
     <ClCompile Include="TranslateShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TransparentShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -231,6 +234,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TranslateShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparentShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -341,6 +347,12 @@
     </FxCompile>
     <FxCompile Include="TranslatePixelShader.hlsl">
       <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="TransparentPixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="TransparentVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

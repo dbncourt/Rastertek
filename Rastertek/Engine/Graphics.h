@@ -10,7 +10,8 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "TranslateShader.h"
+#include "TextureShader.h"
+#include "TransparentShader.h"
 
 
 /////////////
@@ -31,8 +32,11 @@ class Graphics
 private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
-	Model* m_Model;
-	TranslateShader* m_TranslateShader;
+	
+	Model* m_Model1;
+	Model* m_Model2;
+	TextureShader* m_TextureShader;
+	TransparentShader* m_TransparentShader;
 
 public:
 	Graphics();
