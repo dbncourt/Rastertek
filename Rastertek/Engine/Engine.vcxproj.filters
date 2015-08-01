@@ -129,6 +129,9 @@
     <ClCompile Include="ClipPlaneShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TranslateShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -225,6 +228,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ClipPlaneShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TranslateShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -329,6 +335,12 @@
     </FxCompile>
     <FxCompile Include="TextureVertexShader.hlsl">
       <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="TranslateVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="TranslatePixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
