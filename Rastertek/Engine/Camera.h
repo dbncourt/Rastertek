@@ -18,6 +18,7 @@ private:
 	D3DXVECTOR3 m_position;
 	D3DXVECTOR3 m_rotation;
 	D3DXMATRIX m_viewMatrix;
+	D3DXMATRIX m_reflectionViewMatrix;
 
 public:
 	Camera();
@@ -32,6 +33,9 @@ public:
 
 	void Render();
 	void GetViewMatrix(D3DXMATRIX& viewMatrix);
+
+	void RenderReflection(float height);
+	void GetReflectionViewMatrix(D3DXMATRIX& reflectionMatrix);
 };
 
 #endif

@@ -22,8 +22,15 @@ TextureShader::~TextureShader()
 
 bool TextureShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
+	bool result;
+
 	//Initialize the vertex and pixel shaders
-	return TextureShader::InitializeShader(device, hwnd, L"TextureVertexShader.hlsl", L"TexturePixelShader.hlsl");
+	result = TextureShader::InitializeShader(device, hwnd, L"TextureVertexShader.hlsl", L"TexturePixelShader.hlsl");
+	if (!result)
+	{
+		return false;
+	}
+	return true;
 }
 
 void TextureShader::Shutdown()
@@ -34,15 +41,18 @@ void TextureShader::Shutdown()
 
 bool TextureShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
 {
+	bool result;
+
 	//Set the shader parameters that it will use for rendering
-	if (!TextureShader::SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture))
+	result = TextureShader::SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture);
+	if (!result)
 	{
 		return false;
 	}
 
 	//Now render the prepared buffer with the shader
 	TextureShader::RenderShader(deviceContext, indexCount);
-	
+
 	return true;
 }
 
@@ -275,7 +285,7 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DX
 	}
 
 	//Get a pointer to the data in the constant buffer
-	dataPtr = (MatrixBufferType*) mappedResource.pData;
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	//Copy the matrices into the constant buffer
 	dataPtr->world = worldMatrix;

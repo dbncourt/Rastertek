@@ -23,8 +23,15 @@ TranslateShader::~TranslateShader()
 
 bool TranslateShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
+	bool result;
+
 	//Initialize the vertex and pixel shaders
-	return TranslateShader::InitializeShader(device, hwnd, L"TranslateVertexShader.hlsl", L"TranslatePixelShader.hlsl");
+	result = TranslateShader::InitializeShader(device, hwnd, L"TranslateVertexShader.hlsl", L"TranslatePixelShader.hlsl");
+	if (!result)
+	{
+		return false;
+	}
+	return true;
 }
 
 void TranslateShader::Shutdown()

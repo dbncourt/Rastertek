@@ -6,7 +6,7 @@
 
 Texture::Texture()
 {
-	this->m_Texture = nullptr;
+	this->m_texture = nullptr;
 }
 
 Texture::Texture(const Texture& other)
@@ -22,7 +22,7 @@ bool Texture::Initialize(ID3D11Device* device, WCHAR* filename)
 	HRESULT result;
 
 	//Load the texture in
-	result = D3DX11CreateShaderResourceViewFromFile(device, filename, nullptr, nullptr, &this->m_Texture, nullptr);
+	result = D3DX11CreateShaderResourceViewFromFile(device, filename, nullptr, nullptr, &this->m_texture, nullptr);
 	if (FAILED(result))
 	{
 		return false;
@@ -34,14 +34,14 @@ bool Texture::Initialize(ID3D11Device* device, WCHAR* filename)
 void Texture::Shutdown()
 {
 	// Release the texture resource.
-	if (this->m_Texture)
+	if (this->m_texture)
 	{
-		this->m_Texture->Release();
-		this->m_Texture = nullptr;
+		this->m_texture->Release();
+		this->m_texture = nullptr;
 	}
 }
 
 ID3D11ShaderResourceView* Texture::GetTexture()
 {
-	return this->m_Texture;
+	return this->m_texture;
 }

@@ -135,6 +135,9 @@
     <ClCompile Include="TransparentShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ReflectionShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -239,6 +242,9 @@
     <ClInclude Include="TransparentShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectionShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bump01.dds">
@@ -272,6 +278,9 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="stone02.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="blue01.dds">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -354,6 +363,12 @@
     <FxCompile Include="TransparentVertexShader.hlsl">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </FxCompile>
+    <FxCompile Include="ReflectionVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="ReflectionPixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="shader-error.txt">
@@ -375,6 +390,9 @@
       <Filter>Resource Files\Models</Filter>
     </Text>
     <Text Include="model.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+    <Text Include="floor.txt">
       <Filter>Resource Files\Models</Filter>
     </Text>
   </ItemGroup>

@@ -98,6 +98,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -171,6 +174,7 @@
     <ClCompile Include="ModelList.cpp" />
     <ClCompile Include="MultiTextureShader.cpp" />
     <ClCompile Include="Position.cpp" />
+    <ClCompile Include="ReflectionShader.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SpecMapShader.cpp" />
@@ -207,6 +211,7 @@
     <ClInclude Include="ModelList.h" />
     <ClInclude Include="MultiTextureShader.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="ReflectionShader.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SpecMapShader.h" />
@@ -220,6 +225,7 @@
     <ClInclude Include="TransparentShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="blue01.dds" />
     <Image Include="bump01.dds" />
     <Image Include="bump02.dds" />
     <Image Include="dirt01.dds" />
@@ -359,6 +365,19 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="ReflectionPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="ReflectionVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="SpecMapPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -416,6 +435,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="cube.txt" />
+    <Text Include="floor.txt" />
     <Text Include="fontdata.txt" />
     <Text Include="model.txt" />
     <Text Include="shader-error.txt" />

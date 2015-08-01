@@ -16,7 +16,7 @@
 class Texture
 {
 private:
-	ID3D11ShaderResourceView* m_Texture;
+	ID3D11ShaderResourceView* m_texture;
 
 public:
 	Texture();
