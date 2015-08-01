@@ -8,8 +8,8 @@ TextureShader::TextureShader()
 	this->m_vertexShader = nullptr;
 	this->m_pixelShader = nullptr;
 	this->m_layout = nullptr;
-	this->m_matrixBuffer = nullptr;
 	this->m_sampleState = nullptr;
+	this->m_matrixBuffer = nullptr;
 }
 
 TextureShader::TextureShader(const TextureShader& other)

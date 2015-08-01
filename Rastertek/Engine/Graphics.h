@@ -12,7 +12,8 @@
 #include "Model.h"
 #include "TextureShader.h"
 #include "RenderTexture.h"
-#include "ReflectionShader.h"
+#include "Bitmap.h"
+#include "FadeShader.h"
 
 
 /////////////
@@ -36,8 +37,12 @@ private:
 	Model* m_Model;
 	TextureShader* m_TextureShader;
 	RenderTexture* m_RenderTexture;
-	Model* m_FloorModel;
-	ReflectionShader* m_ReflectionShader;
+	Bitmap* m_Bitmap;
+	FadeShader* m_FadeShader;
+	float m_fadeInTime;
+	float m_accumulatedTime;
+	float m_fadePercentage;
+	bool m_fadeDone;
 
 public:
 	Graphics();
@@ -46,11 +51,12 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
-	bool Frame();
+	bool Frame(float frameTime);
 	bool Render();
 
 private:
-	bool RenderToTexture();
-	bool RenderScene();
+	bool RenderToTexture(float rotation);
+	bool RenderFadingScreen();
+	bool RenderNormalScene(float rotation);
 };
 #endif
