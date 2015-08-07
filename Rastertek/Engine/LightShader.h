@@ -4,7 +4,6 @@
 #ifndef _LIGHTSHADER_H_
 #define _LIGHTSHADER_H_
 
-
 //////////////
 // INCLUDES //
 //////////////
@@ -14,12 +13,12 @@
 #include <fstream>
 using namespace std;
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LightShader
 ////////////////////////////////////////////////////////////////////////////////
 class LightShader
 {
+
 private:
 	struct MatrixBufferType
 	{
@@ -30,6 +29,7 @@ private:
 
 	struct LightBufferType
 	{
+		D3DXCOLOR ambientLight;
 		D3DXCOLOR diffuseColor;
 		D3DXVECTOR3 lightDirection;
 		float padding;
@@ -49,15 +49,14 @@ public:
 
 	bool Initialize(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXCOLOR diffuseColor);
+	bool Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXCOLOR ambientColor, D3DXCOLOR diffuseColor);
 
 private:
-	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename);
-	void ShutdownShaders();
-	void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFilename);
+	bool InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vertexShaderFileName, WCHAR* pixelShaderFileName);
+	void ShutdownShader();
+	void OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, WCHAR* shaderFileName);
 
-	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXCOLOR diffuseColor);
+	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix, D3DXMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, D3DXVECTOR3 lightDirection, D3DXCOLOR ambientColor, D3DXCOLOR diffuseColor);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 };
-
 #endif

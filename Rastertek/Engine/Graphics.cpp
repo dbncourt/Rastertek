@@ -8,11 +8,16 @@ Graphics::Graphics()
 {
 	this->m_Direct3D = nullptr;
 	this->m_Camera = nullptr;
-	this->m_Model = nullptr;
-	this->m_TextureShader = nullptr;
-	this->m_RenderTexture = nullptr;
-	this->m_FadeShader = nullptr;
-	this->m_Bitmap = nullptr;
+	this->m_GroundModel = nullptr;
+	this->m_WallModel = nullptr;
+	this->m_BathModel = nullptr;
+	this->m_WaterModel = nullptr;
+	this->m_Light = nullptr;
+	this->m_RefractionTexture = nullptr;
+	this->m_ReflectionTexture = nullptr;
+	this->m_LightShader = nullptr;
+	this->m_RefractionShader = nullptr;
+	this->m_WaterShader = nullptr;
 }
 
 Graphics::Graphics(const Graphics& other)
@@ -49,144 +54,241 @@ bool Graphics::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	//Create the Model object
-	this->m_Model = new Model();
-	if (!this->m_Model)
+	//Create the GroundModel object
+	this->m_GroundModel = new Model();
+	if (!this->m_GroundModel)
 	{
 		return false;
 	}
 
-	//Initialize the Model object
-	result = this->m_Model->Initialize(this->m_Direct3D->GetDevice(), "cube.txt", L"seafloor.dds");
+	//Initialize the GroundModel object
+	result = this->m_GroundModel->Initialize(this->m_Direct3D->GetDevice(), "ground.txt", L"ground01.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the Model object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the GroundModel object.", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the TextureShader object
-	this->m_TextureShader = new TextureShader();
-	if (!this->m_TextureShader)
+	//Create the WallModel object
+	this->m_WallModel = new Model();
+	if (!this->m_WallModel)
 	{
 		return false;
 	}
 
-	//Initialize the TextureShader object
-	result = this->m_TextureShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	//Initialize the WallModel object
+	result = this->m_WallModel->Initialize(this->m_Direct3D->GetDevice(), "wall.txt", L"wall01.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the TextureShader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the WallModel object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Create the render to texture object
-	this->m_RenderTexture = new RenderTexture();
-	if (!this->m_RenderTexture)
+	//Create the BathModel object
+	this->m_BathModel = new Model();
+	if (!this->m_BathModel)
 	{
 		return false;
 	}
 
-	//Initialize the RenderTexture object
-	result = this->m_RenderTexture->Initialize(this->m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	//Initialize the BathModel object
+	result = this->m_BathModel->Initialize(this->m_Direct3D->GetDevice(), "bath.txt", L"marble01.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the RenderTexture object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the BathModel object.", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the Bitmap object
-	this->m_Bitmap = new Bitmap();
-	if (!this->m_Bitmap)
+	//Create the WaterModel object
+	this->m_WaterModel = new Model();
+	if (!this->m_WaterModel)
 	{
 		return false;
 	}
 
-	//Initialize the Bitmap object
-	result = this->m_Bitmap->Initialize(this->m_Direct3D->GetDevice(), screenWidth, screenHeight, screenWidth, screenHeight);
+	//Initialize the WaterModel object
+	result = this->m_WaterModel->Initialize(this->m_Direct3D->GetDevice(), "water.txt", L"water01.dds");
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the Bitmap object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the WaterModel object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Set the fade in time to 3000 milliseconds
-	this->m_fadeInTime = 3000.0f;
-
-	// Initialize the accumulated time to zero milliseconds
-	this->m_accumulatedTime = 0.0f;
-
-	// Initialize the fade percentage to zero at first so the scene is black
-	this->m_fadePercentage = 0.0f;
-
-	//Set the fading in effect to not done
-	this->m_fadeDone = false;
-
-	//Create the FadeShader object
-	this->m_FadeShader = new FadeShader();
-	if (!this->m_FadeShader)
+	//Create the Light object
+	this->m_Light = new Light();
+	if (!this->m_Light)
 	{
 		return false;
 	}
 
-	//Initialize the FadeShader object
-	result = this->m_FadeShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	// Initialize the Light object.
+	this->m_Light->SetAmbientColor(D3DXCOLOR(0.15f, 0.15f, 0.15f, 1.0f));
+	this->m_Light->SetDiffuseColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	this->m_Light->SetDirection(D3DXVECTOR3(0.0f, -1.0f, 0.5f));
+
+	//Create the Refraction RenderTexture object
+	this->m_RefractionTexture = new RenderTexture();
+	if (!this->m_RefractionTexture)
+	{
+		return false;
+	}
+
+	// Initialize the Refraction RenderTexture object.
+	result = this->m_RefractionTexture->Initialize(this->m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	if (FAILED(result))
+	{
+		MessageBox(hwnd, L"Could not initialize the Refraction RenderTexture object.", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the Reflection RenderTexture object
+	this->m_ReflectionTexture = new RenderTexture();
+	if (!this->m_ReflectionTexture)
+	{
+		return false;
+	}
+
+	// Initialize the Reflection RenderTexture object.
+	result = this->m_ReflectionTexture->Initialize(this->m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	if (FAILED(result))
+	{
+		MessageBox(hwnd, L"Could not initialize the Reflection RenderTexture object.", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the LightShader object
+	this->m_LightShader = new LightShader();
+	if (!this->m_LightShader)
+	{
+		return false;
+	}
+
+	//Initialize the LightShader object
+	result = this->m_LightShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the FadeShader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the LightShader object.", L"Error", MB_OK);
 		return false;
 	}
 
+	// Create the RefractionShader object
+	this->m_RefractionShader = new RefractionShader();
+	if (!this->m_RefractionShader)
+	{
+		return false;
+	}
+
+	//Initialize the RefractionShader object
+	result = this->m_RefractionShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the RefractionShader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	//Create the WaterShader object
+	this->m_WaterShader = new WaterShader();
+	if (!this->m_WaterShader)
+	{
+		return false;
+	}
+
+	//Initialize the WaterShader object
+	result = this->m_WaterShader->Initialize(this->m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the BitmapWaterShader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Set the height of the water.
+	this->m_waterHeight = 2.75f;
+
+	// Initialize the position of the water.
+	this->m_waterTranslation = 0.0f;
+	
 	return true;
 }
 
 void Graphics::Shutdown()
 {
-	//Release the FadeShader object
-	if (this->m_FadeShader)
+	//Release the WaterShader object
+	if (this->m_WaterShader)
 	{
-		this->m_FadeShader->Shutdown();
-		delete this->m_FadeShader;
-		this->m_FadeShader = nullptr;
+		this->m_WaterShader->Shutdown();
+		delete this->m_WaterShader;
+		this->m_WaterShader = nullptr;
 	}
 
-	//Release the Bitmap object
-	if (this->m_Bitmap)
+	//Release the RefractionShader object
+	if (this->m_RefractionShader)
 	{
-		this->m_Bitmap->Shutdown();
-		delete this->m_Bitmap;
-		this->m_Bitmap = nullptr;
+		this->m_RefractionShader->Shutdown();
+		delete this->m_RefractionShader;
+		this->m_RefractionShader = nullptr;
 	}
 
-	//Release the ReflectionShader object
-	if (this->m_FadeShader)
+	//Release the LightShader object
+	if (this->m_LightShader)
 	{
-		this->m_FadeShader->Shutdown();
-		delete this->m_FadeShader;
-		this->m_FadeShader = nullptr;
+		this->m_LightShader->Shutdown();
+		delete this->m_LightShader;
+		this->m_LightShader = nullptr;
 	}
 
-	//Release the RenderTexture object
-	if (this->m_RenderTexture)
+	//Release the Reflection RenderTexture object
+	if (this->m_ReflectionTexture)
 	{
-		this->m_RenderTexture->Shutdown();
-		delete this->m_RenderTexture;
-		this->m_RenderTexture = nullptr;
+		this->m_ReflectionTexture->Shutdown();
+		delete this->m_ReflectionTexture;
+		this->m_ReflectionTexture = nullptr;
 	}
 
-	//Release the TextureShader object
-	if (this->m_TextureShader)
+	//Release the Refraction RenderTexture object
+	if (this->m_RefractionTexture)
 	{
-		this->m_TextureShader->Shutdown();
-		delete this->m_TextureShader;
-		this->m_TextureShader = nullptr;
+		this->m_RefractionTexture->Shutdown();
+		delete this->m_RefractionTexture;
+		this->m_RefractionTexture = nullptr;
 	}
 
-	//Release the Model object
-	if (this->m_Model)
+	//Release the Light object
+	if (this->m_Light)
 	{
-		this->m_Model->Shutdown();
-		delete this->m_Model;
-		this->m_Model = nullptr;
+		delete this->m_Light;
+		this->m_Light = nullptr;
+	}
+
+	//Release the WaterModel object
+	if (this->m_WaterModel)
+	{
+		this->m_WaterModel->Shutdown();
+		delete this->m_WaterModel;
+		this->m_WaterModel = nullptr;
+	}
+
+	//Release the BathModel object
+	if (this->m_BathModel)
+	{
+		this->m_BathModel->Shutdown();
+		delete this->m_BathModel;
+		this->m_BathModel = nullptr;
+	}
+
+	//Release the WallModel object
+	if (this->m_WallModel)
+	{
+		this->m_WallModel->Shutdown();
+		delete this->m_WallModel;
+		this->m_WallModel = nullptr;
+	}
+
+	//Release the GroundModel object
+	if (this->m_GroundModel)
+	{
+		this->m_GroundModel->Shutdown();
+		delete this->m_GroundModel;
+		this->m_GroundModel = nullptr;
 	}
 
 	//Release the Camera object
@@ -205,31 +307,19 @@ void Graphics::Shutdown()
 	}
 }
 
-bool Graphics::Frame(float frameTime)
+bool Graphics::Frame()
 {
-	if (!this->m_fadeDone)
+	// Update the position of the water to simulate motion.
+	this->m_waterTranslation += 0.001f;
+	if (this->m_waterTranslation > 1.0f)
 	{
-
-		// Update the accumulated time with the extra frame time addition
-		this->m_accumulatedTime += frameTime;
-
-		// While the time goes on increase the fade in amount by the time that is passing each frame
-		if (this->m_accumulatedTime < this->m_fadeInTime)
-		{
-			// Calculate the percentage that the screen should be faded in based on the accumulated time
-			this->m_fadePercentage = this->m_accumulatedTime / this->m_fadeInTime;
-		}
-		else
-		{
-			//If the fade in time is complete then turn off the fade effect and render the scene normally
-			this->m_fadeDone = true;
-
-			// Set the percentage to 100%
-			this->m_fadePercentage = 1.0f;
-		}
+		this->m_waterTranslation -= 1.0f;
 	}
+
 	//Set the position of the Camera
-	this->m_Camera->SetPosition(D3DXVECTOR3(0.0f, 0.0f, -10.0f));
+	this->m_Camera->SetPosition(D3DXVECTOR3(-10.0f, 6.0f, -10.0f));
+	//Set the rotation of the Camera
+	this->m_Camera->SetRotation(D3DXVECTOR3(0.0f, 45.0f, 0.0f));
 
 	return true;
 }
@@ -237,151 +327,206 @@ bool Graphics::Frame(float frameTime)
 bool Graphics::Render()
 {
 	bool result;
-	static float rotation = 0.0f;
-
-	// Update the rotation variable each frame
-	rotation += (float)D3DX_PI * 0.005f;
-	if (rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
 	
-	if (this->m_fadeDone)
+	// Render the refraction of the scene to a texture.
+	result = Graphics::RenderRefractionToTexture();
+	if (!result)
 	{
-		// If fading in is complete then render the scene normally using the back buffer
-		Graphics::RenderNormalScene(rotation);
-	}
-	else
-	{
-		// If fading in is not complete then render the scene to a texture and fade that texture in
-		result = Graphics::RenderToTexture(rotation);
-		if (!result)
-		{
-			return false;
-		}
-
-		result = Graphics::RenderFadingScreen();
-		if (!result)
-		{
-			return false;
-		}
+		return false;
 	}
 
+	// Render the reflection of the scene to a texture.
+	result = Graphics::RenderReflectionToTexture();
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the scene as normal to the back buffer.
+	result = Graphics::RenderScene();
+	if (!result)
+	{
+		return false;
+	}
 	return true;
 }
 
-bool Graphics::RenderToTexture(float rotation)
+bool Graphics::RenderRefractionToTexture()
 {
+	bool result;
+
 	D3DXMATRIX viewMatrix;
 	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX worldMatrix;
 
-	// Set the render target to be render to texture.
-	this->m_RenderTexture->SetRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView());
+	D3DXVECTOR4 clipPlane;
 
-	// Clear the render to texture
-	this->m_RenderTexture->ClearRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView(), 0.0f, 0.0f, 0.0f, 1.0f);
+	// Setup a clipping plane based on the height of the water to clip everything above it.
+	clipPlane = D3DXVECTOR4(0.0f, -1.0f, 0.0f, this->m_waterHeight + 0.1f);
 
-	// Get the world and projection matrices
+	// Set the render target to be the Refraction RenderTexture.
+	this->m_RefractionTexture->SetRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView());
+
+	// Clear the Refraction RenderTexture.
+	this->m_RefractionTexture->ClearRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Generate the ViewMatrix based on the camera's position.
+	this->m_Camera->Render();
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
 	this->m_Direct3D->GetWorldMatrix(worldMatrix);
 	this->m_Camera->GetViewMatrix(viewMatrix);
 	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
-	// Multiply the worldMatrix by the rotation
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	// Translate to where the BathModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 2.0f, 0.0f);
 
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing
-	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
+	// Put the BathModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_BathModel->Render(this->m_Direct3D->GetDeviceContext());
 
-	// Render the model using the texture shader and the reflection view matrix
-	this->m_TextureShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture());
+	// Render the BathModel using the LightShader.
+	result = this->m_RefractionShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_BathModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_BathModel->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor(), clipPlane);
+	if (!result)
+	{
+		return false;
+	}
 
-	// Reset the render target back to the original back buffer and not the render to texture anymore
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
 	this->m_Direct3D->SetBackBufferRenderTarget();
 
 	return true;
 }
 
-bool Graphics::RenderFadingScreen()
+bool Graphics::RenderReflectionToTexture()
 {
 
 	bool result;
 
-	D3DXMATRIX viewMatrix;
-	D3DXMATRIX orthoMatrix;
 	D3DXMATRIX worldMatrix;
+	D3DXMATRIX reflectionViewMatrix;
+	D3DXMATRIX projectionMatrix;
 
-	// Clear the buffers to begin the scene
-	this->m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
- 
-	// Generate the viewMatrix based on the camera's position
-	this->m_Camera->Render();
+	// Set the render target to be the Reflection RenderTexture.
+	this->m_ReflectionTexture->SetRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView());
 
-	// Get the world, view and projection matrices from the camera and Direct3D object
+	// Clear the Reflection RenderTexture.
+	this->m_ReflectionTexture->ClearRenderTarget(this->m_Direct3D->GetDeviceContext(), this->m_Direct3D->GetDepthStencilView(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Use the camera to render the Reflection and create a ReflectionViewMatrix.
+	this->m_Camera->RenderReflection(m_waterHeight);
+
+	// Get the camera ReflectionViewMatrix instead of the normal ViewMatrix.
+	this->m_Camera->GetReflectionViewMatrix(reflectionViewMatrix);
+
+	// Get the world and projection matrices from the d3d object.
 	this->m_Direct3D->GetWorldMatrix(worldMatrix);
-	this->m_Camera->GetViewMatrix(viewMatrix);
-	this->m_Direct3D->GetOrthoMatrix(orthoMatrix);
+	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
-	// Turn off the Z buffer to begin all the 2D rendering
-	this->m_Direct3D->TurnZBufferOff();
+	// Translate to where the WallModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 6.0f, 8.0f);
 
-	// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing
-	result = this->m_Bitmap->Render(this->m_Direct3D->GetDeviceContext(), 0, 0);
+	// Put the WallModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_WallModel->Render(this->m_Direct3D->GetDeviceContext());
+
+	// Render the WallModel using the LightShader and the ReflectionViewMatrix.
+	result = this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_WallModel->GetIndexCount(), worldMatrix, reflectionViewMatrix, projectionMatrix, this->m_WallModel->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Render the bitmap using the FadeShader
-	result = this->m_FadeShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, this->m_RenderTexture->GetShaderResourceView(), this->m_fadePercentage);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Turn the Z buffer back on now that all 2D rendering has completed
-	this->m_Direct3D->TurnZBufferOn();
-
-	// Present the rendered scene to the screen
-	this->m_Direct3D->EndScene();
+	// Reset the render target back to the original back buffer and not the render to texture anymore.
+	this->m_Direct3D->SetBackBufferRenderTarget();
 
 	return true;
 }
 
-bool Graphics::RenderNormalScene(float rotation)
+bool Graphics::RenderScene()
 {
 	bool result;
 
-	D3DXMATRIX viewMatrix;
-	D3DXMATRIX projectionMatrix;
 	D3DXMATRIX worldMatrix;
+	D3DXMATRIX viewMatrix;
+	D3DXMATRIX reflectionViewMatrix;
+	D3DXMATRIX projectionMatrix;
 
-	// Clear the buffers to begin the scene
+	// Clear the buffers to begin the scene.
 	this->m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Generate the buffers to begin the scene
+	// Generate the view matrix based on the camera's position.
 	this->m_Camera->Render();
 
-	// Get the world, view and projection matrices from the camera and Direct3D object
+	// Get the world, view, and projection matrices from the camera and d3d objects.
 	this->m_Direct3D->GetWorldMatrix(worldMatrix);
 	this->m_Camera->GetViewMatrix(viewMatrix);
 	this->m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
-	// Multiply the worldMatrix by the rotation
-	D3DXMatrixRotationY(&worldMatrix, rotation);
+	// Translate to where the GroundModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 1.0f, 0.0f);
 
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	this->m_Model->Render(this->m_Direct3D->GetDeviceContext());
+	// Put the GroundModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_GroundModel->Render(this->m_Direct3D->GetDeviceContext());
 
-	// Render the model with the texture shader
-	result = this->m_TextureShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_Model->GetTexture());
+	// Render the GroundModel using the LightShader.
+	result = this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_GroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_GroundModel->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Present the rendered scene to the screen
+	// Reset the worldMatrix.
+	this->m_Direct3D->GetWorldMatrix(worldMatrix);
+
+	// Translate to where the WallModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 6.0f, 8.0f);
+
+	// Put the WallModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_WallModel->Render(this->m_Direct3D->GetDeviceContext());
+
+	// Render the WallModel using the LightShader.
+	result = this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_WallModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_WallModel->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the worldMatrix.
+	this->m_Direct3D->GetWorldMatrix(worldMatrix);
+
+	// Translate to where the BathModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 2.0f, 0.0f);
+
+	// Put the BathModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_BathModel->Render(this->m_Direct3D->GetDeviceContext());
+
+	// Render the BathModel using the LightShader.
+	result = this->m_LightShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_BathModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, this->m_BathModel->GetTexture(), this->m_Light->GetDirection(), this->m_Light->GetAmbientColor(), this->m_Light->GetDiffuseColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Reset the worldMatrix.
+	this->m_Direct3D->GetWorldMatrix(worldMatrix);
+
+	// Get the camera ReflectionViewMatrix.
+	this->m_Camera->GetReflectionViewMatrix(reflectionViewMatrix);
+
+	// Translate to where the WaterModel will be rendered.
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, this->m_waterHeight, 0.0f);
+
+	// Put the WaterModel vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	this->m_WaterModel->Render(this->m_Direct3D->GetDeviceContext());
+
+	// Render the WaterModel using the WaterShader.
+	result = this->m_WaterShader->Render(this->m_Direct3D->GetDeviceContext(), this->m_WaterModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, reflectionViewMatrix, this->m_ReflectionTexture->GetShaderResourceView(), this->m_RefractionTexture->GetShaderResourceView(), this->m_WaterModel->GetTexture(), this->m_waterTranslation, 0.01f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Present the rendered scene to the screen.
 	this->m_Direct3D->EndScene();
-	
+
 	return true;
 }

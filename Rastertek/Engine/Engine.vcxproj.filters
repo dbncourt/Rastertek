@@ -141,6 +141,12 @@
     <ClCompile Include="FadeShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WaterShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RefractionShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -251,6 +257,12 @@
     <ClInclude Include="FadeShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RefractionShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bump01.dds">
@@ -287,6 +299,18 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="blue01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="wall01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="water01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="ground01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="marble01.dds">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -381,11 +405,20 @@
     <FxCompile Include="FadeVertexShader.hlsl">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </FxCompile>
+    <FxCompile Include="WaterPixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="WaterVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="RefractionPixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="RefractionVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="shader-error.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="square.txt">
       <Filter>Resource Files\Models</Filter>
     </Text>
@@ -405,6 +438,18 @@
       <Filter>Resource Files\Models</Filter>
     </Text>
     <Text Include="floor.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+    <Text Include="bath.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+    <Text Include="ground.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+    <Text Include="wall.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+    <Text Include="water.txt">
       <Filter>Resource Files\Models</Filter>
     </Text>
   </ItemGroup>

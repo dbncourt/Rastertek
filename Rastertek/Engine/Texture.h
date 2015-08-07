@@ -20,7 +20,7 @@ private:
 
 public:
 	Texture();
-	Texture(const Texture&);
+	Texture(const Texture& other);
 	~Texture();
 
 	bool Initialize(ID3D11Device* device, WCHAR* filename);

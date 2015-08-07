@@ -176,6 +176,7 @@
     <ClCompile Include="MultiTextureShader.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="ReflectionShader.cpp" />
+    <ClCompile Include="RefractionShader.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SpecMapShader.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TranslateShader.cpp" />
     <ClCompile Include="TransparentShader.cpp" />
+    <ClCompile Include="WaterShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaMapShader.h" />
@@ -214,6 +216,7 @@
     <ClInclude Include="MultiTextureShader.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="ReflectionShader.h" />
+    <ClInclude Include="RefractionShader.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SpecMapShader.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TranslateShader.h" />
     <ClInclude Include="TransparentShader.h" />
+    <ClInclude Include="WaterShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="blue01.dds" />
@@ -232,13 +236,17 @@
     <Image Include="bump02.dds" />
     <Image Include="dirt01.dds" />
     <Image Include="font.dds" />
+    <Image Include="ground01.dds" />
     <Image Include="light01.dds" />
     <Image Include="light02.dds" />
+    <Image Include="marble01.dds" />
     <Image Include="Red.dds" />
     <Image Include="seafloor.dds" />
     <Image Include="spec02.dds" />
     <Image Include="stone01.dds" />
     <Image Include="stone02.dds" />
+    <Image Include="wall01.dds" />
+    <Image Include="water01.dds" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="AlphaMapPixelShader.hlsl">
@@ -392,6 +400,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="RefractionPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="RefractionVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="SpecMapPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -446,16 +466,31 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="WaterPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="WaterVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="bath.txt" />
     <Text Include="cube.txt" />
     <Text Include="floor.txt" />
     <Text Include="fontdata.txt" />
+    <Text Include="ground.txt" />
     <Text Include="model.txt" />
-    <Text Include="shader-error.txt" />
     <Text Include="sphere.txt" />
     <Text Include="square.txt" />
     <Text Include="triangle.txt" />
+    <Text Include="wall.txt" />
+    <Text Include="water.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,10 +10,11 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "TextureShader.h"
+#include "Light.h"
 #include "RenderTexture.h"
-#include "Bitmap.h"
-#include "FadeShader.h"
+#include "LightShader.h"
+#include "RefractionShader.h"
+#include "WaterShader.h"
 
 
 /////////////
@@ -34,15 +35,18 @@ class Graphics
 private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
-	Model* m_Model;
-	TextureShader* m_TextureShader;
-	RenderTexture* m_RenderTexture;
-	Bitmap* m_Bitmap;
-	FadeShader* m_FadeShader;
-	float m_fadeInTime;
-	float m_accumulatedTime;
-	float m_fadePercentage;
-	bool m_fadeDone;
+	Model* m_GroundModel;
+	Model* m_WallModel;
+	Model* m_BathModel;
+	Model* m_WaterModel;
+	Light* m_Light;
+	RenderTexture* m_RefractionTexture;
+	RenderTexture* m_ReflectionTexture;
+	LightShader* m_LightShader;
+	RefractionShader* m_RefractionShader;
+	WaterShader* m_WaterShader;
+	float m_waterHeight;
+	float m_waterTranslation;
 
 public:
 	Graphics();
@@ -51,12 +55,12 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
-	bool Frame(float frameTime);
+	bool Frame();
 	bool Render();
 
 private:
-	bool RenderToTexture(float rotation);
-	bool RenderFadingScreen();
-	bool RenderNormalScene(float rotation);
+	bool RenderRefractionToTexture();
+	bool RenderReflectionToTexture();
+	bool RenderScene();
 };
 #endif

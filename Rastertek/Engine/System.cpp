@@ -8,8 +8,6 @@ System::System()
 {
 	this->m_Input = nullptr;
 	this->m_Graphics = nullptr;
-	this->m_Timer = nullptr;
-	this->m_Position = nullptr;
 }
 
 System::System(const System& other)
@@ -55,32 +53,9 @@ bool System::Initialize()
 	{
 		return false;
 	}
-
 	//Initialize the Graphics object
-	result = this->m_Graphics->Initialize(screenWidth, screenHeight, this->m_hwnd);
+	result = this->m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result)
-	{
-		return false;
-	}
-
-	//Create the Timer object
-	this->m_Timer = new Timer();
-	if (!this->m_Timer)
-	{
-		return false;
-	}
-
-	//Initialize the Timer object
-	result = this->m_Timer->Intialize();
-	if (!result)
-	{
-		MessageBox(this->m_hwnd, L"Could not initialize the Timer object", L"Error", MB_OK);
-		return false;
-	}
-
-	//Create the Position object
-	this->m_Position = new Position();
-	if (!this->m_Position)
 	{
 		return false;
 	}
@@ -89,20 +64,6 @@ bool System::Initialize()
 
 void System::Shutdown()
 {
-	//Release the Position object
-	if (this->m_Position)
-	{
-		delete this->m_Position;
-		this->m_Position = nullptr;
-	}
-
-	//Release the Timer object
-	if (this->m_Timer)
-	{
-		delete this->m_Timer;
-		this->m_Timer = nullptr;
-	}
-
 	//Release the Graphics object
 	if (this->m_Graphics)
 	{
@@ -171,45 +132,28 @@ void System::Run()
 bool System::Frame()
 {
 	bool result;
-		
-	//Update the system stats
-	this->m_Timer->Frame();
 
-	//Do the input frame processing
+	//Do the Input frame processing
 	result = this->m_Input->Frame();
 	if (!result)
 	{
 		return false;
 	}
-	
-	//Set the frame time for calculating the updated position
-	this->m_Position->SetFrameTime(this->m_Timer->GetTime());
-
-	bool keyDown;
-	//Check if the left or right arrow key has been pressed, if so rotate the camera accordingly
-	keyDown = this->m_Input->IsLeftArrowPressed();
-	this->m_Position->TurnLeft(keyDown);
-
-	keyDown = this->m_Input->IsRightArrowPressed();
-	this->m_Position->TurnRight(keyDown);
-
-	//Get the current view point rotation
-	float yRotation;
-	this->m_Position->GetRotation(yRotation);
 
 	//Do the frame processing for the Graphics object
-	result = this->m_Graphics->Frame(this->m_Timer->GetTime());
+	result = this->m_Graphics->Frame();
 	if (!result)
 	{
 		return false;
 	}
 
-	//Finally render the graphics to the screen
+	//Finally render the Graphics to the screen
 	result = this->m_Graphics->Render();
 	if (!result)
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -270,7 +214,7 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 
 		//Set the position of the window to the top left corner
 		posX = posY = 0;
-	} 
+	}
 	else
 	{
 		//If windowed then set it to 800x600 resolution
@@ -281,7 +225,7 @@ void System::InitializeWindows(int& screenWidth, int& screenHeight)
 		posX = (GetSystemMetrics(SM_CXSCREEN) - screenWidth) / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}
-	
+
 	//Create the window with the screen settings and get the handle of it
 	this->m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, this->m_applicationName, this->m_applicationName, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP, posX, posY, screenWidth, screenHeight, nullptr, nullptr, this->m_hinstance, nullptr);
 
@@ -322,21 +266,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wParam, LPARAM lParam)
 	switch (umessage)
 	{
 		//Check if the window is being destroyed
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
+	case WM_DESTROY:
+	{
+		PostQuitMessage(0);
+		return 0;
+	}
 		//Check if the window is being closed
-		case WM_CLOSE:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
+	case WM_CLOSE:
+	{
+		PostQuitMessage(0);
+		return 0;
+	}
 		//All other messages pass to the message handler in the system class
-		default:
-		{
-			return ApplicationHandle->MessageHandler(hwnd, umessage, wParam, lParam);
-		}
+	default:
+	{
+		return ApplicationHandle->MessageHandler(hwnd, umessage, wParam, lParam);
+	}
 	}
 }
