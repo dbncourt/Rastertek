@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Filename: soundclass.h
+// Filename: Sound.h
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef _SOUNDCLASS_H_
 #define _SOUNDCLASS_H_
@@ -18,6 +18,7 @@
 #include <mmsystem.h>
 #include <dsound.h>
 #include <stdio.h>
+#include <d3dx10math.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Class name: Sound
@@ -44,8 +45,11 @@ private:
 	};
 
 	IDirectSound8* m_directSound;
-	IDirectSoundBuffer* m_primaryBuffer;
-	IDirectSoundBuffer8* m_secondaryBuffer;
+	IDirectSoundBuffer* m_primaryDirectSoundBuffer;
+
+	IDirectSound3DListener8* directSound3DListener;
+	IDirectSoundBuffer8* m_secondaryDirectSoundBuffer;
+	IDirectSound3DBuffer8* m_secondaryDirectSound3DBuffer;
 
 public:
 	Sound();
@@ -59,8 +63,8 @@ private:
 	bool InitializeDirectSound(HWND hwnd);
 	void ShutdownDirectSound();
 
-	bool LoadWaveFile(char* fileName, IDirectSoundBuffer8** secondaryBuffer);
-	void ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer);
+	bool LoadWaveFile(char* fileName, IDirectSoundBuffer8** secondaryBuffer, IDirectSound3DBuffer8** secondary3DBuffer);
+	void ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer, IDirectSound3DBuffer8** secondary3DBuffer);
 
 	bool PlayWaveFile();
 };

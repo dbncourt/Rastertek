@@ -8,6 +8,7 @@ System::System()
 {
 	this->m_Input = nullptr;
 	this->m_Graphics = nullptr;
+	this->m_Sound = nullptr;
 }
 
 System::System(const System& other)
@@ -32,31 +33,46 @@ bool System::Initialize()
 	//Initialize the windows API
 	System::InitializeWindows(screenWidth, screenHeight);
 
-	//Create the Input object. This object will be used to handle reading the keyboard input from the user
+	//Create the input object. This object will be used to handle reading the keyboard input from the user
 	this->m_Input = new Input();
 	if (!this->m_Input)
 	{
 		return false;
 	}
 
-	//Initialize the Input object
+	//Initialize the input object
 	result = this->m_Input->Initialize(this->m_hinstance, this->m_hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
-		MessageBox(this->m_hwnd, L"Could not initialize the input object", L"Error", MB_OK);
+		MessageBox(this->m_hwnd, L"Could not initialize the Input object", L"Error", MB_OK);
 		return false;
 	}
 
-	//Create the Graphics object. This object will handle rendering all the graphics for this application
+	//Create the graphics object. This object will handle rendering all the graphics for this application
 	this->m_Graphics = new Graphics();
 	if (!this->m_Graphics)
 	{
 		return false;
 	}
-	//Initialize the Graphics object
-	result = this->m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
+	//Initialize the graphics object
+	result = this->m_Graphics->Initialize(screenWidth, screenHeight, this->m_hwnd);
 	if (!result)
 	{
+		return false;
+	}
+
+	//Create the Sound object
+	this->m_Sound = new Sound();
+	if (!this->m_Sound)
+	{
+		return false;
+	}
+
+	//Initialize the Sound object
+	result = this->m_Sound->Initialize(this->m_hwnd);
+	if (!result)
+	{
+		MessageBox(this->m_hwnd, L"Could not initialize DirectSound object", L"Error", MB_OK);
 		return false;
 	}
 	return true;
@@ -64,7 +80,7 @@ bool System::Initialize()
 
 void System::Shutdown()
 {
-	//Release the Graphics object
+	//Release the graphics object
 	if (this->m_Graphics)
 	{
 		this->m_Graphics->Shutdown();
@@ -72,12 +88,20 @@ void System::Shutdown()
 		this->m_Graphics = nullptr;
 	}
 
-	//Release the Input object
+	//Release the input object
 	if (this->m_Input)
 	{
 		this->m_Input->Shutdown();
 		delete this->m_Input;
 		this->m_Input = nullptr;
+	}
+
+	//Release the sound object
+	if (this->m_Sound)
+	{
+		this->m_Sound->Shutdown();
+		delete this->m_Sound;
+		this->m_Sound = nullptr;
 	}
 
 	// Shutdown the window.
@@ -113,7 +137,7 @@ void System::Run()
 		else
 		{
 			//Otherwise, do the frame processing
-			result = Frame();
+			result = System::Frame();
 			if (!result)
 			{
 				MessageBox(this->m_hwnd, L"Frame Processing Failed", L"Error", MB_OK);
@@ -132,22 +156,27 @@ void System::Run()
 bool System::Frame()
 {
 	bool result;
+	int mouseX;
+	int mouseY;
 
-	//Do the Input frame processing
+	//Do the input frame processing
 	result = this->m_Input->Frame();
 	if (!result)
 	{
 		return false;
 	}
 
-	//Do the frame processing for the Graphics object
-	result = this->m_Graphics->Frame();
+	//Get the location of the mouse from the input object
+	this->m_Input->GetMouseLocation(mouseX, mouseY);
+
+	//Do the frame processing for the graphics object
+	result = this->m_Graphics->Frame(mouseX, mouseY);
 	if (!result)
 	{
 		return false;
 	}
 
-	//Finally render the Graphics to the screen
+	//Finally render the graphics to the screen
 	result = this->m_Graphics->Render();
 	if (!result)
 	{

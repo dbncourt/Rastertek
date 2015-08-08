@@ -16,6 +16,7 @@
 ///////////////////////
 #include "Input.h"
 #include "Graphics.h"
+#include "Sound.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,7 @@ private:
 
 	Input* m_Input;
 	Graphics* m_Graphics;
+	Sound* m_Sound;
 
 public:
 	System();
