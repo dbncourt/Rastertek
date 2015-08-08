@@ -147,6 +147,9 @@
     <ClCompile Include="RefractionShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GlassShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -263,6 +266,9 @@
     <ClInclude Include="RefractionShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GlassShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bump01.dds">
@@ -311,6 +317,18 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="marble01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="icebump01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="ice01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="glass01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="bump03.dds">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -415,6 +433,12 @@
       <Filter>Resource Files\Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="RefractionVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="GlassPixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="GlassVertexShader.hlsl">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>

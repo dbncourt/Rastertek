@@ -575,3 +575,14 @@ void Direct3D::TurnOffAlphaBlending()
 	//Turn on the alpha blending
 	this->m_deviceContext->OMSetBlendState(this->m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 }
+
+ID3D11DepthStencilView* Direct3D::GetDepthStencilView()
+{
+	return this->m_depthStencilView;
+}
+
+void Direct3D::SetBackBufferRenderTarget()
+{
+	// Bind the render target view and depth stencil buffer to the output render pipeline.
+	this->m_deviceContext->OMSetRenderTargets(1, &this->m_renderTargetView, this->m_depthStencilView);
+}

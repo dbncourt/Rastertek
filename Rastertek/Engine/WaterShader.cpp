@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: watershaderclass.cpp
+// Filename: WaterShader.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "WaterShader.h"
 
@@ -32,7 +32,7 @@ bool WaterShader::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"WaterVertexShader.hlsl", L"WaterPixelShader.hlsl");
+	result = WaterShader::InitializeShader(device, hwnd, L"WaterVertexShader.hlsl", L"WaterPixelShader.hlsl");
 	if (!result)
 	{
 		return false;

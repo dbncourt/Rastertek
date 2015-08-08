@@ -8,7 +8,6 @@
 // INCLUDES //
 //////////////
 #include <d3d11.h>
-#include <dxgi.h>
 #include <d3dx10math.h>
 #include <fstream>
 using namespace std;
@@ -29,7 +28,6 @@ private:
 	{
 		D3DXVECTOR3 position;
 		D3DXVECTOR2 texture;
-		D3DXVECTOR3 normal;
 	};
 
 	struct ModelType
@@ -44,6 +42,7 @@ private:
 	UINT m_vertexCount;
 	UINT m_indexCount;
 	Texture* m_Texture;
+	Texture* m_NormalMap;
 	ModelType* m_model;
 
 public:
@@ -51,19 +50,20 @@ public:
 	Model(const Model& other);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName);
+	bool Initialize(ID3D11Device* device, char* modelFileName, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView* GetNormalMap();
 
 private:
 	bool InitializeBuffers(ID3D11Device* device);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* textureFileName);
+	bool LoadTexture(ID3D11Device* device, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName);
 	void ReleaseTexture();
 
 	bool LoadModel(char* modelFileName);

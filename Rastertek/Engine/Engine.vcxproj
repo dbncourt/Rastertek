@@ -165,6 +165,7 @@
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="Fps.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="GlassShader.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="FontShader.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="GlassShader.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Light.h" />
@@ -234,9 +236,13 @@
     <Image Include="blue01.dds" />
     <Image Include="bump01.dds" />
     <Image Include="bump02.dds" />
+    <Image Include="bump03.dds" />
     <Image Include="dirt01.dds" />
     <Image Include="font.dds" />
+    <Image Include="glass01.dds" />
     <Image Include="ground01.dds" />
+    <Image Include="ice01.dds" />
+    <Image Include="icebump01.dds" />
     <Image Include="light01.dds" />
     <Image Include="light02.dds" />
     <Image Include="marble01.dds" />
@@ -344,6 +350,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="GlassPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="GlassVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="LightMapPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
