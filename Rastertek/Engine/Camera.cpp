@@ -18,7 +18,6 @@ Camera::~Camera()
 {
 }
 
-
 void Camera::SetPosition(D3DXVECTOR3 position)
 {
 	this->m_position = position;
@@ -82,9 +81,9 @@ void Camera::RenderReflection(float height)
 	// Setup the position of the camera in the world
 	// For planar reflection invert the Y position of the camera.
 	eye = D3DXVECTOR3(
-			this->m_position.x,
-			(-this->m_position.y + (height * 2.0f)),
-			this->m_position.z);
+		this->m_position.x,
+		(-this->m_position.y + (height * 2.0f)),
+		this->m_position.z);
 
 	// Calculate the rotation in radians
 	float radians = this->m_position.y * 0.0174532925f;

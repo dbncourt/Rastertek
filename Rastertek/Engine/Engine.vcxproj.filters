@@ -452,5 +452,8 @@
     <Text Include="water.txt">
       <Filter>Resource Files\Models</Filter>
     </Text>
+    <Text Include="plane01.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
   </ItemGroup>
 </Project>

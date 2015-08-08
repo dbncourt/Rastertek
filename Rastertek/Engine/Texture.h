@@ -8,6 +8,7 @@
 // INCLUDES //
 //////////////
 #include <d3d11.h>
+#include <dxgi.h>
 #include <d3dx11tex.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +24,7 @@ public:
 	Texture(const Texture& other);
 	~Texture();
 
-	bool Initialize(ID3D11Device* device, WCHAR* filename);
+	bool Initialize(ID3D11Device* device, WCHAR* fileName);
 	void Shutdown();
 
 	ID3D11ShaderResourceView* GetTexture();

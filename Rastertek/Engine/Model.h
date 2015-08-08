@@ -8,6 +8,7 @@
 // INCLUDES //
 //////////////
 #include <d3d11.h>
+#include <dxgi.h>
 #include <d3dx10math.h>
 #include <fstream>
 using namespace std;
@@ -38,20 +39,19 @@ private:
 		D3DXVECTOR3 normal;
 	};
 
-	ModelType* m_model;
-	Texture* m_Texture;
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;
 	UINT m_vertexCount;
 	UINT m_indexCount;
-
+	Texture* m_Texture;
+	ModelType* m_model;
 
 public:
 	Model();
-	Model(const Model&);
+	Model(const Model& other);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename);
+	bool Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
@@ -63,10 +63,10 @@ private:
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* filename);
+	bool LoadTexture(ID3D11Device* device, WCHAR* textureFileName);
 	void ReleaseTexture();
 
-	bool LoadModel(char* modelFilename);
+	bool LoadModel(char* modelFileName);
 	void ReleaseModel();
 };
 #endif

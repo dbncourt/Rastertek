@@ -22,13 +22,13 @@ private:
 
 public:
 	Camera();
-	Camera(const Camera&);
+	Camera(const Camera& other);
 	~Camera();
 
 	void SetPosition(D3DXVECTOR3 position);
-	void SetRotation(D3DXVECTOR3 rotation);
-
 	D3DXVECTOR3 GetPosition();
+
+	void SetRotation(D3DXVECTOR3 rotation);
 	D3DXVECTOR3 GetRotation();
 
 	void Render();
@@ -37,5 +37,4 @@ public:
 	void RenderReflection(float height);
 	void GetReflectionViewMatrix(D3DXMATRIX& reflectionMatrix);
 };
-
 #endif

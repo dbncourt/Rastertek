@@ -11,8 +11,7 @@ Direct3D::Direct3D()
 	this->m_deviceContext = nullptr;
 	this->m_renderTargetView = nullptr;
 	this->m_depthStencilBuffer = nullptr;
-	this->m_depthStencilState = nullptr;
-	this->m_depthDisabledStencilState = nullptr;
+	this->m_depthEnabledStencilState = nullptr;
 	this->m_depthStencilView = nullptr;
 	this->m_rasterizerState = nullptr;
 	this->m_alphaEnableBlendingState = nullptr;
@@ -33,22 +32,11 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 {
 	HRESULT result;
 
-	IDXGIFactory* factory;
-	IDXGIAdapter* adapter;
-	IDXGIOutput* adapterOutput;
-	unsigned int numModes;
-	unsigned int i;
-	unsigned int numerator;
-	unsigned int denominator;
-	unsigned int stringLength;
-	int error;
-	float fieldOfView;
-	float screenAspect;
-
 	//Store the vsync setting
 	this->m_vsync_enabled = vsync;
 
 	//Create a DirectX graphics interface factory
+	IDXGIFactory* factory;
 	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
 	if (FAILED(result))
 	{
@@ -56,6 +44,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Use the factory to create an adapter for the primary graphics interface (video card)
+	IDXGIAdapter* adapter;
 	result = factory->EnumAdapters(0, &adapter);
 	if (FAILED(result))
 	{
@@ -63,6 +52,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Enumerate the primary adapter output (monitor)
+	IDXGIOutput* adapterOutput;
 	result = adapter->EnumOutputs(0, &adapterOutput);
 	if (FAILED(result))
 	{
@@ -70,6 +60,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output(monitor)
+	UINT numModes;
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, nullptr);
 	if (FAILED(result))
 	{
@@ -77,8 +68,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	}
 
 	//Create a list to hold all the possible display modes for this monitor/video card combination
-	DXGI_MODE_DESC* displayModeList;
-	displayModeList = new DXGI_MODE_DESC[numModes];
+	DXGI_MODE_DESC* displayModeList = new DXGI_MODE_DESC[numModes];
 	if (!displayModeList)
 	{
 		return false;
@@ -93,7 +83,9 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//Now go through all the display modes and find the one that matches the screen width and height
 	//When a match is found, store the numerator and denominator of the refresh rate for that monitor
-	for (i = 0; i < numModes; i++)
+	UINT numerator;
+	UINT denominator;
+	for (UINT i = 0; i < numModes; i++)
 	{
 		if (displayModeList[i].Width == (unsigned int)screenWidth)
 		{
@@ -117,6 +109,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	this->m_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
 	//Convert the name of the video card to a character array and store it
+	UINT stringLength;
+	int error;
 	error = wcstombs_s(&stringLength, this->m_videoCardDescription, 128, adapterDesc.Description, 128);
 	if (error != 0)
 	{
@@ -138,8 +132,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//Release the factory
 	factory->Release();
 	factory = nullptr;
-	
-	//Initialize the swap chain description
+
+	// Create and Initialize the swap chain description
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
@@ -177,7 +171,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	//Set to full screen or windowed mode
 	swapChainDesc.Windowed = !fullscreen;
-	
+
 	//Set the scan line ordering and scaling to unspecified
 	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -189,8 +183,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	swapChainDesc.Flags = 0;
 
 	//Set the feature level to DirectX 11
-	D3D_FEATURE_LEVEL featureLevel;
-	featureLevel = D3D_FEATURE_LEVEL_11_0;
+	D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
 
 	//Create the swap chain, Direct3D device, and Direct3D device context
 	result = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, &featureLevel, 1, D3D11_SDK_VERSION, &swapChainDesc, &this->m_swapChain, &this->m_device, nullptr, &this->m_deviceContext);
@@ -249,7 +242,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	
+
 	depthStencilDesc.StencilEnable = true;
 	depthStencilDesc.StencilReadMask = 0xFF;
 	depthStencilDesc.StencilWriteMask = 0xFF;
@@ -267,14 +260,14 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	//Create the depth stencil state
-	result = this->m_device->CreateDepthStencilState(&depthStencilDesc, &this->m_depthStencilState);
+	result = this->m_device->CreateDepthStencilState(&depthStencilDesc, &this->m_depthEnabledStencilState);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	//Set the depth stencil state
-	this->m_deviceContext->OMSetDepthStencilState(this->m_depthStencilState, 1);
+	this->m_deviceContext->OMSetDepthStencilState(this->m_depthEnabledStencilState, 1);
 
 	//Create the disabled stencil desc
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
@@ -303,6 +296,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+
 	//Initialize the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
@@ -323,21 +317,22 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	this->m_deviceContext->OMSetRenderTargets(1, &this->m_renderTargetView, this->m_depthStencilView);
 
 	//Setup the raster description which will determine how and what polygons will be drawn
-	D3D11_RASTERIZER_DESC rasterDesc;
-	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
-	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
-	rasterDesc.DepthBias = 0;
-	rasterDesc.DepthBiasClamp = 0.0f;
-	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = D3D11_FILL_SOLID;
-	rasterDesc.FrontCounterClockwise = false;
-	rasterDesc.MultisampleEnable = false;
-	rasterDesc.ScissorEnable = false;
-	rasterDesc.SlopeScaledDepthBias = 0.0f;
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+	rasterizerDesc.AntialiasedLineEnable = false;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.DepthBias = 0;
+	rasterizerDesc.DepthBiasClamp = 0.0f;
+	rasterizerDesc.DepthClipEnable = true;
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.FrontCounterClockwise = false;
+	rasterizerDesc.MultisampleEnable = false;
+	rasterizerDesc.ScissorEnable = false;
+	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
 
 	//Create the rasterizer state from the description we just filled out
-	result = this->m_device->CreateRasterizerState(&rasterDesc, &this->m_rasterizerState);
+	result = this->m_device->CreateRasterizerState(&rasterizerDesc, &this->m_rasterizerState);
 	if (FAILED(result))
 	{
 		return false;
@@ -349,6 +344,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//Setup the viewport for rendering
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
 	viewport.Width = (float)screenWidth;
 	viewport.Height = (float)screenHeight;
 	viewport.MinDepth = 0.0f;
@@ -360,8 +356,8 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	this->m_deviceContext->RSSetViewports(1, &viewport);
 
 	//Setup the projection matrix
-	fieldOfView = (float)D3DX_PI / 4.0f;
-	screenAspect = (float)screenWidth / (float)screenHeight;
+	float fieldOfView = (float)D3DX_PI / 4.0f;
+	float screenAspect = (float)screenWidth / (float)screenHeight;
 
 	//Create and clear the blend state description
 	D3D11_BLEND_DESC blendStateDescription;
@@ -374,7 +370,7 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 
 	//Create the blend state using the description
@@ -388,11 +384,12 @@ bool Direct3D::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
 
 	//Create the blend state using the description
-	result = this->m_device->CreateBlendState(&blendStateDescription, &this->m_alphaDisableBlendingState); 
+	result = this->m_device->CreateBlendState(&blendStateDescription, &this->m_alphaDisableBlendingState);
 	if (FAILED(result))
 	{
 		return false;
 	}
+
 
 	//Create the projection matrix for 3d rendering
 	D3DXMatrixPerspectiveFovLH(&this->m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
@@ -439,10 +436,10 @@ void Direct3D::Shutdown()
 		this->m_depthStencilView = nullptr;
 	}
 
-	if (this->m_depthStencilState)
+	if (this->m_depthEnabledStencilState)
 	{
-		this->m_depthStencilState->Release();
-		this->m_depthStencilState = nullptr;
+		this->m_depthEnabledStencilState->Release();
+		this->m_depthEnabledStencilState = nullptr;
 	}
 
 	if (this->m_depthDisabledStencilState)
@@ -482,21 +479,15 @@ void Direct3D::Shutdown()
 	}
 }
 
-void Direct3D::BeginScene(float red, float green, float blue, float alpha)
+void Direct3D::BeginScene(D3DXCOLOR backBufferColor)
 {
-
-	float color[4];
-
 	//Setup the color to clear the buffer to
-	color[0] = red;
-	color[1] = green;
-	color[2] = blue;
-	color[3] = alpha;
+	float color[4] = { backBufferColor.r, backBufferColor.g, backBufferColor.b, backBufferColor.a };
 
 	//Clear the back-buffer
 	this->m_deviceContext->ClearRenderTargetView(this->m_renderTargetView, color);
 
-	//Clear the depth-buffer
+	//Clear the depth buffer
 	this->m_deviceContext->ClearDepthStencilView(this->m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -548,13 +539,14 @@ void Direct3D::GetVideoCardInfo(char* cardName, int& memory)
 
 void Direct3D::TurnZBufferOn()
 {
-	this->m_deviceContext->OMSetDepthStencilState(this->m_depthStencilState, 1);
+	this->m_deviceContext->OMSetDepthStencilState(this->m_depthEnabledStencilState, 1);
 }
 
 void Direct3D::TurnZBufferOff()
 {
 	this->m_deviceContext->OMSetDepthStencilState(this->m_depthDisabledStencilState, 1);
 }
+
 
 void Direct3D::TurnOnAlphaBlending()
 {

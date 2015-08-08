@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "Light.h"
 
-
 Light::Light()
 {
 }
@@ -16,14 +15,9 @@ Light::~Light()
 {
 }
 
-D3DXCOLOR Light::GetAmbientColor()
+void Light::SetDiffuseColor(D3DXCOLOR diffuseColor)
 {
-	return this->m_ambientColor;
-}
-
-void Light::SetAmbientColor(D3DXCOLOR ambientColor)
-{
-	this->m_ambientColor = ambientColor;
+	this->m_diffuseColor = diffuseColor;
 }
 
 D3DXCOLOR Light::GetDiffuseColor()
@@ -31,38 +25,12 @@ D3DXCOLOR Light::GetDiffuseColor()
 	return this->m_diffuseColor;
 }
 
-void Light::SetDiffuseColor(D3DXCOLOR diffuseColor)
-{
-	this->m_diffuseColor = diffuseColor;
-}
-
-D3DXVECTOR3 Light::GetDirection()
-{
-	return this->m_lightDirection;
-}
-
-void Light::SetDirection(D3DXVECTOR3 lightDirection)
+void Light::SetPosition(D3DXVECTOR4 lightDirection)
 {
 	this->m_lightDirection = lightDirection;
 }
 
-D3DXCOLOR Light::GetSpecularColor()
+D3DXVECTOR4 Light::GetPosition()
 {
-	return this->m_specularColor;
+	return this->m_lightDirection;
 }
-
-void Light::SetSpecularColor(D3DXCOLOR specularColor)
-{
-	this->m_specularColor = specularColor;
-}
-
-float Light::GetSpecularPower()
-{
-	return this->m_specularPower;
-}
-
-void Light::SetSpecularPower(float specularPower)
-{
-	this->m_specularPower = specularPower;
-}
-

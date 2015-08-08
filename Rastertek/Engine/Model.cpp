@@ -20,12 +20,12 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
+bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName)
 {
 	bool result;
 
 	// Load in the model data
-	result = Model::LoadModel(modelFilename);
+	result = Model::LoadModel(modelFileName);
 	if (!result)
 	{
 		return false;
@@ -39,7 +39,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* texture
 	}
 
 	// Load the texture for this model.
-	result = Model::LoadTexture(device, textureFilename);
+	result = Model::LoadTexture(device, textureFileName);
 	if (!result)
 	{
 		return false;
@@ -196,7 +196,7 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* fileName)
 {
 	bool result;
 
@@ -208,7 +208,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
 	}
 
 	//Initialize the texture object
-	result = this->m_Texture->Initialize(device, filename);
+	result = this->m_Texture->Initialize(device, fileName);
 	if (!result)
 	{
 		return false;
@@ -220,7 +220,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* filename)
 void Model::ReleaseTexture()
 {
 	//Release the texture object
-	if (!this->m_Texture)
+	if (this->m_Texture)
 	{
 		this->m_Texture->Shutdown();
 		delete this->m_Texture;
@@ -228,13 +228,13 @@ void Model::ReleaseTexture()
 	}
 }
 
-bool Model::LoadModel(char* modelFilename)
+bool Model::LoadModel(char* modelFileName)
 {
 	ifstream fIn;
 	char input;
 
 	//Open the model file
-	fIn.open(modelFilename);
+	fIn.open(modelFileName);
 
 	// If it could not open the file then exit
 	if (fIn.fail())

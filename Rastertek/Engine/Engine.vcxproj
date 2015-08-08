@@ -486,6 +486,7 @@
     <Text Include="fontdata.txt" />
     <Text Include="ground.txt" />
     <Text Include="model.txt" />
+    <Text Include="plane01.txt" />
     <Text Include="sphere.txt" />
     <Text Include="square.txt" />
     <Text Include="triangle.txt" />

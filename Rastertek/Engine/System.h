@@ -3,24 +3,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
-
 ///////////////////////////////
 // PRE-PROCESSING DIRECTIVES //
 ///////////////////////////////
 #define WIN32_LEAN_AND_MEAN
-
 //////////////
 // INCLUDES //
 //////////////
 #include <windows.h>
-
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "Input.h"
 #include "Graphics.h"
-#include "Timer.h"
-#include "Position.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,8 +31,6 @@ private:
 
 	Input* m_Input;
 	Graphics* m_Graphics;
-	Timer* m_Timer;
-	Position* m_Position;
 
 public:
 	System();
@@ -48,7 +41,7 @@ public:
 	void Shutdown();
 	void Run();
 
-	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
+	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 private:
 	bool Frame();
@@ -60,7 +53,7 @@ private:
 /////////////////////////
 // FUNCTION PROTOTYPES //
 /////////////////////////
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
+static LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wParam, LPARAM lParam);
 
 /////////////
 // GLOBALS //
