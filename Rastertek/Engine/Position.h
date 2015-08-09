@@ -8,7 +8,7 @@
 //////////////
 // INCLUDES //
 //////////////
-#include <math.h>
+#include <d3dx10math.h>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,21 +18,26 @@
 class Position
 {
 private:
+	D3DXVECTOR3 m_position;
+	D3DXVECTOR3 m_rotation;
 	float m_frameTime;
-	float m_rotationY;
-	float m_leftTurnSpeed;
-	float m_rightTurnSpeed;
+	float m_leftSpeed;
+	float m_rightSpeed;
 
 public:
 	Position();
 	Position(const Position& other);
 	~Position();
 
+	void SetPosition(_In_ D3DXVECTOR3 position);
+	void GetPosition(_Out_ D3DXVECTOR3& position);
+
+	void SetRotation(_In_ D3DXVECTOR3 rotation);
+	void GetRotation(_Out_ D3DXVECTOR3 rotation);
+
 	void SetFrameTime(float time);
-	void GetRotation(float& yRotation);
 
-	void TurnLeft(bool keydown);
-	void TurnRight(bool keydown);
+	void MoveLeft(bool keydown);
+	void MoveRight(bool keydown);
 };
-
 #endif

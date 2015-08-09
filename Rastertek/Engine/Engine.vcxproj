@@ -244,6 +244,7 @@
     <Image Include="fire01.dds" />
     <Image Include="font.dds" />
     <Image Include="glass01.dds" />
+    <Image Include="grid01.dds" />
     <Image Include="ground01.dds" />
     <Image Include="ice01.dds" />
     <Image Include="icebump01.dds" />

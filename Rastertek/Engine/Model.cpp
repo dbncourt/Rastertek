@@ -9,8 +9,6 @@ Model::Model()
 	this->m_vertexBuffer = nullptr;
 	this->m_indexBuffer = nullptr;
 	this->m_Texture = nullptr;
-	this->m_Texture2 = nullptr;
-	this->m_Texture3 = nullptr;
 	this->m_model = nullptr;
 }
 
@@ -22,7 +20,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3)
+bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName)
 {
 	bool result;
 
@@ -40,8 +38,8 @@ bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* texture
 		return false;
 	}
 
-	//Load the texture for this model
-	result = Model::LoadTexture(device, textureFileName, textureFileName2, textureFileName3);
+	// Load the texture for this model.
+	result = Model::LoadTexture(device, textureFileName);
 	if (!result)
 	{
 		return false;
@@ -78,29 +76,25 @@ ID3D11ShaderResourceView* Model::GetTexture()
 	return this->m_Texture->GetTexture();
 }
 
-ID3D11ShaderResourceView* Model::GetTexture2()
-{
-	return this->m_Texture2->GetTexture();
-}
-
-ID3D11ShaderResourceView* Model::GetTexture3()
-{
-	return this->m_Texture3->GetTexture();
-}
-
 bool Model::InitializeBuffers(ID3D11Device* device)
 {
+	VertexType* vertices;
+	UINT* indices;
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData;
+	D3D11_BUFFER_DESC indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA indexData;
 	HRESULT result;
 
 	//Create the vertex array
-	VertexType* vertices = new VertexType[this->m_vertexCount];
+	vertices = new VertexType[this->m_vertexCount];
 	if (!vertices)
 	{
 		return false;
 	}
 
 	//Create the index array
-	UINT* indices = new UINT[this->m_indexCount];
+	indices = new UINT[this->m_indexCount];
 	if (!indices)
 	{
 		return false;
@@ -111,23 +105,18 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	{
 		vertices[i].position = this->m_model[i].position;
 		vertices[i].texture = this->m_model[i].texture;
+		vertices[i].normal = this->m_model[i].normal;
 
 		indices[i] = i;
 	}
 
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
 	//Set up the description of the static vertex buffer
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * this->m_vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	D3D11_SUBRESOURCE_DATA vertexData;
-	ZeroMemory(&vertexData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	//Give the sub-resource structure a pointer to the vertex data
 	vertexData.pSysMem = vertices;
@@ -141,9 +130,6 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 		return false;
 	}
 
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
 	//Set up the description of the static index buffer
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * this->m_indexCount;
@@ -151,9 +137,6 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
 	indexBufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA indexData;
-	ZeroMemory(&indexData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	//Give the sub-resource structure a pointer to the index data
 	indexData.pSysMem = indices;
@@ -179,14 +162,14 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 
 void Model::ShutdownBuffers()
 {
-	//Release the Index Buffer
+	//Release the index buffer
 	if (this->m_indexBuffer)
 	{
 		this->m_indexBuffer->Release();
 		this->m_indexBuffer = nullptr;
 	}
 
-	//Release the Vertex Buffer
+	//Release the vertex buffer
 	if (this->m_vertexBuffer)
 	{
 		this->m_vertexBuffer->Release();
@@ -196,9 +179,12 @@ void Model::ShutdownBuffers()
 
 void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
+	unsigned int stride;
+	unsigned int offset;
+
 	//Set vertex buffer stride and offset
-	UINT stride = sizeof(VertexType);
-	UINT offset = 0;
+	stride = sizeof(VertexType);
+	offset = 0;
 
 	//Set the vertex buffer to active in the input assembler so it can be rendered
 	deviceContext->IASetVertexBuffers(0, 1, &this->m_vertexBuffer, &stride, &offset);
@@ -210,47 +196,19 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3)
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* fileName)
 {
 	bool result;
 
-	//Create the Texture object
-	this->m_Texture = new Texture();
+	//Create the texture object
+	this->m_Texture = new Texture;
 	if (!this->m_Texture)
 	{
 		return false;
 	}
 
-	//Initialize the Texture object
-	result = this->m_Texture->Initialize(device, textureFileName);
-	if (!result)
-	{
-		return false;
-	}
-
-	//Create the Texture2 object
-	this->m_Texture2 = new Texture();
-	if (!this->m_Texture2)
-	{
-		return false;
-	}
-
-	//Initialize the Texture2 object
-	result = this->m_Texture2->Initialize(device, textureFileName2);
-	if (!result)
-	{
-		return false;
-	}
-
-	//Create the Texture3 object
-	this->m_Texture3 = new Texture();
-	if (!this->m_Texture3)
-	{
-		return false;
-	}
-
-	//Initialize the Texture3 object
-	result = this->m_Texture3->Initialize(device, textureFileName3);
+	//Initialize the texture object
+	result = this->m_Texture->Initialize(device, fileName);
 	if (!result)
 	{
 		return false;
@@ -261,23 +219,7 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* textureFileName, WCHAR* tex
 
 void Model::ReleaseTexture()
 {
-	//Release the Texture object
-	if (this->m_Texture3)
-	{
-		this->m_Texture3->Shutdown();
-		delete this->m_Texture3;
-		this->m_Texture3 = nullptr;
-	}
-
-	//Release the Texture2 object
-	if (this->m_Texture2)
-	{
-		this->m_Texture2->Shutdown();
-		delete this->m_Texture2;
-		this->m_Texture2 = nullptr;
-	}
-
-	//Release the Texture object
+	//Release the texture object
 	if (this->m_Texture)
 	{
 		this->m_Texture->Shutdown();

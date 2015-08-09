@@ -10,7 +10,7 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "FireShader.h"
+#include "TextureShader.h"
 
 
 /////////////
@@ -31,8 +31,9 @@ class Graphics
 private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
-	Model* m_Model;
-	FireShader* m_FireShader;
+	Model* m_FloorModel;
+	Model* m_BillboardModel;
+	TextureShader* m_TextureShader;
 
 public:
 	Graphics();
@@ -41,7 +42,7 @@ public:
 
 	bool Initialize(int screenWidth, int screenHeight, HWND hwnd);
 	void Shutdown();
-	bool Frame();
+	bool Frame(D3DXVECTOR3 position);
 
 private:
 	bool Render();

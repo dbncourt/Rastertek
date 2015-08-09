@@ -346,6 +346,9 @@
     <Image Include="alpha02.dds">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="grid01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="AlphaMapPixelShader.hlsl">

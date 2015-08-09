@@ -85,7 +85,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	alphaColor = alphaTexture.Sample(SampleType2, noiseCoords.xy);
 
 	// Set the alpha blending of the fire to the perturbed and distored alpha texture value.
-	fireColor.a = alphaColor.xa;
+	fireColor.a = alphaColor.x;
 
 	return fireColor;
 }
