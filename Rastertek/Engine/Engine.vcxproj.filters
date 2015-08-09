@@ -150,6 +150,9 @@
     <ClCompile Include="GlassShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FireShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -269,6 +272,9 @@
     <ClInclude Include="GlassShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FireShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bump01.dds">
@@ -329,6 +335,15 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="bump03.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="noise01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="fire01.dds">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="alpha02.dds">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -439,6 +454,12 @@
       <Filter>Resource Files\Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="GlassVertexShader.hlsl">
+      <Filter>Resource Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="FirePixelShader.hlsl">
+      <Filter>Resource Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="FireVertexShader.hlsl">
       <Filter>Resource Files\Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>

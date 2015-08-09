@@ -9,7 +9,8 @@ Model::Model()
 	this->m_vertexBuffer = nullptr;
 	this->m_indexBuffer = nullptr;
 	this->m_Texture = nullptr;
-	this->m_NormalMap = nullptr;
+	this->m_Texture2 = nullptr;
+	this->m_Texture3 = nullptr;
 	this->m_model = nullptr;
 }
 
@@ -21,7 +22,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName)
+bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3)
 {
 	bool result;
 
@@ -40,7 +41,7 @@ bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* colorTe
 	}
 
 	//Load the texture for this model
-	result = Model::LoadTexture(device, colorTextureFileName, normalMapTextureFileName);
+	result = Model::LoadTexture(device, textureFileName, textureFileName2, textureFileName3);
 	if (!result)
 	{
 		return false;
@@ -77,9 +78,14 @@ ID3D11ShaderResourceView* Model::GetTexture()
 	return this->m_Texture->GetTexture();
 }
 
-ID3D11ShaderResourceView* Model::GetNormalMap()
+ID3D11ShaderResourceView* Model::GetTexture2()
 {
-	return this->m_NormalMap->GetTexture();
+	return this->m_Texture2->GetTexture();
+}
+
+ID3D11ShaderResourceView* Model::GetTexture3()
+{
+	return this->m_Texture3->GetTexture();
 }
 
 bool Model::InitializeBuffers(ID3D11Device* device)
@@ -204,7 +210,7 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName)
+bool Model::LoadTexture(ID3D11Device* device, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3)
 {
 	bool result;
 
@@ -216,21 +222,35 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* colorTextureFileName, WCHAR
 	}
 
 	//Initialize the Texture object
-	result = this->m_Texture->Initialize(device, colorTextureFileName);
+	result = this->m_Texture->Initialize(device, textureFileName);
 	if (!result)
 	{
 		return false;
 	}
 
-	//Create the NormalMap Texture object
-	this->m_NormalMap = new Texture();
-	if (!this->m_NormalMap)
+	//Create the Texture2 object
+	this->m_Texture2 = new Texture();
+	if (!this->m_Texture2)
 	{
 		return false;
 	}
 
-	//Initialize the NormalMap Texture object
-	result = this->m_NormalMap->Initialize(device, normalMapTextureFileName);
+	//Initialize the Texture2 object
+	result = this->m_Texture2->Initialize(device, textureFileName2);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Create the Texture3 object
+	this->m_Texture3 = new Texture();
+	if (!this->m_Texture3)
+	{
+		return false;
+	}
+
+	//Initialize the Texture3 object
+	result = this->m_Texture3->Initialize(device, textureFileName3);
 	if (!result)
 	{
 		return false;
@@ -242,19 +262,27 @@ bool Model::LoadTexture(ID3D11Device* device, WCHAR* colorTextureFileName, WCHAR
 void Model::ReleaseTexture()
 {
 	//Release the Texture object
-	if (!this->m_Texture)
+	if (this->m_Texture3)
+	{
+		this->m_Texture3->Shutdown();
+		delete this->m_Texture3;
+		this->m_Texture3 = nullptr;
+	}
+
+	//Release the Texture2 object
+	if (this->m_Texture2)
+	{
+		this->m_Texture2->Shutdown();
+		delete this->m_Texture2;
+		this->m_Texture2 = nullptr;
+	}
+
+	//Release the Texture object
+	if (this->m_Texture)
 	{
 		this->m_Texture->Shutdown();
 		delete this->m_Texture;
 		this->m_Texture = nullptr;
-	}
-
-	//Release the NormalMap Texture object
-	if (!this->m_NormalMap)
-	{
-		this->m_NormalMap->Shutdown();
-		delete this->m_NormalMap;
-		this->m_NormalMap = nullptr;
 	}
 }
 

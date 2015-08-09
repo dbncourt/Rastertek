@@ -42,7 +42,8 @@ private:
 	UINT m_vertexCount;
 	UINT m_indexCount;
 	Texture* m_Texture;
-	Texture* m_NormalMap;
+	Texture* m_Texture2;
+	Texture* m_Texture3;
 	ModelType* m_model;
 
 public:
@@ -50,20 +51,22 @@ public:
 	Model(const Model& other);
 	~Model();
 
-	bool Initialize(ID3D11Device* device, char* modelFileName, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName);
+	bool Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
+
 	ID3D11ShaderResourceView* GetTexture();
-	ID3D11ShaderResourceView* GetNormalMap();
+	ID3D11ShaderResourceView* GetTexture2();
+	ID3D11ShaderResourceView* GetTexture3();
 
 private:
 	bool InitializeBuffers(ID3D11Device* device);
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext* deviceContext);
 
-	bool LoadTexture(ID3D11Device* device, WCHAR* colorTextureFileName, WCHAR* normalMapTextureFileName);
+	bool LoadTexture(ID3D11Device* device, WCHAR* textureFileName, WCHAR* textureFileName2, WCHAR* textureFileName3);
 	void ReleaseTexture();
 
 	bool LoadModel(char* modelFileName);

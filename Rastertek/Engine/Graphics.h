@@ -10,9 +10,7 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Model.h"
-#include "RenderTexture.h"
-#include "TextureShader.h"
-#include "GlassShader.h"
+#include "FireShader.h"
 
 
 /////////////
@@ -34,10 +32,7 @@ private:
 	Direct3D* m_Direct3D;
 	Camera* m_Camera;
 	Model* m_Model;
-	Model* m_WindowModel;
-	RenderTexture* m_RenderTexture;
-	TextureShader* m_TextureShader;
-	GlassShader* m_GlassShader;
+	FireShader* m_FireShader;
 
 public:
 	Graphics();
@@ -49,7 +44,6 @@ public:
 	bool Frame();
 
 private:
-	bool RenderToTexture(float rotation);
-	bool Render(float rotation);
+	bool Render();
 };
 #endif

@@ -160,6 +160,7 @@
     <ClCompile Include="DebugWindow.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="FadeShader.cpp" />
+    <ClCompile Include="FireShader.cpp" />
     <ClCompile Include="FogShader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontShader.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="DebugWindow.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="FadeShader.h" />
+    <ClInclude Include="FireShader.h" />
     <ClInclude Include="FogShader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontShader.h" />
@@ -233,11 +235,13 @@
     <ClInclude Include="WaterShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="alpha02.dds" />
     <Image Include="blue01.dds" />
     <Image Include="bump01.dds" />
     <Image Include="bump02.dds" />
     <Image Include="bump03.dds" />
     <Image Include="dirt01.dds" />
+    <Image Include="fire01.dds" />
     <Image Include="font.dds" />
     <Image Include="glass01.dds" />
     <Image Include="ground01.dds" />
@@ -246,6 +250,7 @@
     <Image Include="light01.dds" />
     <Image Include="light02.dds" />
     <Image Include="marble01.dds" />
+    <Image Include="noise01.dds" />
     <Image Include="Red.dds" />
     <Image Include="seafloor.dds" />
     <Image Include="spec02.dds" />
@@ -318,6 +323,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="FadeVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FirePixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="FireVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
