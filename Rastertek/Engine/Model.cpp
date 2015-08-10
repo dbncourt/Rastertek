@@ -8,7 +8,6 @@ Model::Model()
 {
 	this->m_vertexBuffer = nullptr;
 	this->m_indexBuffer = nullptr;
-	this->m_Texture = nullptr;
 	this->m_model = nullptr;
 }
 
@@ -20,7 +19,7 @@ Model::~Model()
 {
 }
 
-bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* textureFileName)
+bool Model::Initialize(ID3D11Device* device, char* modelFileName)
 {
 	bool result;
 
@@ -38,21 +37,11 @@ bool Model::Initialize(ID3D11Device* device, char* modelFileName, WCHAR* texture
 		return false;
 	}
 
-	// Load the texture for this model.
-	result = Model::LoadTexture(device, textureFileName);
-	if (!result)
-	{
-		return false;
-	}
-
 	return true;
 }
 
 void Model::Shutdown()
 {
-	//Release the model texture
-	Model::ReleaseTexture();
-
 	// Shutdown the vertex and index buffers
 	Model::ShutdownBuffers();
 
@@ -71,30 +60,19 @@ int Model::GetIndexCount()
 	return this->m_indexCount;
 }
 
-ID3D11ShaderResourceView* Model::GetTexture()
-{
-	return this->m_Texture->GetTexture();
-}
-
 bool Model::InitializeBuffers(ID3D11Device* device)
 {
-	VertexType* vertices;
-	UINT* indices;
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData;
-	D3D11_BUFFER_DESC indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA indexData;
 	HRESULT result;
 
 	//Create the vertex array
-	vertices = new VertexType[this->m_vertexCount];
+	VertexType* vertices = new VertexType[this->m_vertexCount];
 	if (!vertices)
 	{
 		return false;
 	}
 
 	//Create the index array
-	indices = new UINT[this->m_indexCount];
+	UINT* indices = new UINT[this->m_indexCount];
 	if (!indices)
 	{
 		return false;
@@ -104,19 +82,23 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	for (UINT i = 0; i < this->m_vertexCount; i++)
 	{
 		vertices[i].position = this->m_model[i].position;
-		vertices[i].texture = this->m_model[i].texture;
-		vertices[i].normal = this->m_model[i].normal;
 
 		indices[i] = i;
 	}
 
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
 	//Set up the description of the static vertex buffer
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * this->m_vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.ByteWidth = sizeof(VertexType) * this->m_vertexCount;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	ZeroMemory(&vertexData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	//Give the sub-resource structure a pointer to the vertex data
 	vertexData.pSysMem = vertices;
@@ -130,6 +112,9 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 		return false;
 	}
 
+	D3D11_BUFFER_DESC indexBufferDesc;
+	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
 	//Set up the description of the static index buffer
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * this->m_indexCount;
@@ -137,6 +122,9 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
 	indexBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA indexData;
+	ZeroMemory(&indexData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	//Give the sub-resource structure a pointer to the index data
 	indexData.pSysMem = indices;
@@ -162,14 +150,14 @@ bool Model::InitializeBuffers(ID3D11Device* device)
 
 void Model::ShutdownBuffers()
 {
-	//Release the index buffer
+	//Release the Index Buffer
 	if (this->m_indexBuffer)
 	{
 		this->m_indexBuffer->Release();
 		this->m_indexBuffer = nullptr;
 	}
 
-	//Release the vertex buffer
+	//Release the Vertex Buffer
 	if (this->m_vertexBuffer)
 	{
 		this->m_vertexBuffer->Release();
@@ -179,12 +167,9 @@ void Model::ShutdownBuffers()
 
 void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
-	unsigned int stride;
-	unsigned int offset;
-
 	//Set vertex buffer stride and offset
-	stride = sizeof(VertexType);
-	offset = 0;
+	UINT stride = sizeof(VertexType);
+	UINT offset = 0;
 
 	//Set the vertex buffer to active in the input assembler so it can be rendered
 	deviceContext->IASetVertexBuffers(0, 1, &this->m_vertexBuffer, &stride, &offset);
@@ -194,38 +179,6 @@ void Model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	//Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-bool Model::LoadTexture(ID3D11Device* device, WCHAR* fileName)
-{
-	bool result;
-
-	//Create the texture object
-	this->m_Texture = new Texture;
-	if (!this->m_Texture)
-	{
-		return false;
-	}
-
-	//Initialize the texture object
-	result = this->m_Texture->Initialize(device, fileName);
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void Model::ReleaseTexture()
-{
-	//Release the texture object
-	if (this->m_Texture)
-	{
-		this->m_Texture->Shutdown();
-		delete this->m_Texture;
-		this->m_Texture = nullptr;
-	}
 }
 
 bool Model::LoadModel(char* modelFileName)

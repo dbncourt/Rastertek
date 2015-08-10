@@ -16,8 +16,6 @@
 ///////////////////////
 #include "Input.h"
 #include "Graphics.h"
-#include "Timer.h"
-#include "Position.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,8 +31,6 @@ private:
 
 	Input* m_Input;
 	Graphics* m_Graphics;
-	Timer* m_Timer;
-	Position* m_Position;
 
 public:
 	System();
